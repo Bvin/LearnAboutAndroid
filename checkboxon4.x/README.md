@@ -1,0 +1,1 @@
+经过实践认证，自定义CheckBox和底部文字在JellyBean并不会产生对齐混乱
