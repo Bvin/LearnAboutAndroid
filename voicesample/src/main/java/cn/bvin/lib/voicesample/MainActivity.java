@@ -8,6 +8,11 @@ import android.widget.TextView;
 
 import java.io.File;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -47,42 +52,62 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    /*ValidVoice表示声音振幅大于设定值(例如把振幅大于6000的表示是人耳能听见的声音)的一个点*/
+    //以下声音都是表示ValidVoice，即有效声音，不包括听不见的声音
+    private boolean mValidVoiceBreak;//持续声音是否结束
+    private long mValidVoiceStart;//持续声音开始时间
+    private long mValidVoiceEnd;//持续声音结束时间
+    private long mCurrentValidVoiceTime;//当前声音的时间
 
-    private boolean mVoiceBreak;//持续声音是否结束
-    private long mHightVoiceStart;
-    private long mHightVoiceEnd;
-    private long mHightVoice;//当前声音
+    public static final int VALID_VOICE_AMPLITUDE = 6000;//人耳可听见声音阈值
+    public static final int AFTER_VALID_VOICE_DURATION = 1000*5;//持续声音过后多长时间的算一段持续的声音
+    public static final int VALID_VOICE_DURATION_MIN = 1000*5;//持续5秒以上的声音才算一段持续的声音
+
+    private long[] mContinueVoiceDuration = new long[2];
+    private List<long[]> mContinueVoiceList = new ArrayList<>();//持续时间列表
+
     private void startCaptureSample(){
         new Thread(new Runnable() {
             @Override
             public void run() {
-                while (mRecording){
+                while (mRecording){//录制中则采集，停止录制时退出采集线程
                     if (mMediaRecorder != null) {
                         try {
                             int maxAmplitude = mMediaRecorder.getMaxAmplitude();
                             if (maxAmplitude > 0) {
-                                if (maxAmplitude > 6000) {//高音分支
-                                    if (mVoiceBreak || mHightVoice == 0)//一进来就有声音|连续声音告一段落
-                                        mHightVoiceStart = System.currentTimeMillis();//直有断了才去更新开始时间
-                                    mHightVoice = System.currentTimeMillis();
-                                    mVoiceBreak = false;
+                                if (maxAmplitude > VALID_VOICE_AMPLITUDE) {//高音分支
+                                    if (mValidVoiceBreak || mCurrentValidVoiceTime == 0) {//一进来就有声音|连续声音告一段落
+                                        mValidVoiceStart = System.currentTimeMillis();//直有断了才去更新开始时间
+                                        mContinueVoiceDuration[0] = mValidVoiceStart;
+                                    }
+                                    mCurrentValidVoiceTime = System.currentTimeMillis();
+                                    mValidVoiceBreak = false;
                                     Log.d("声音高: ", String.valueOf(maxAmplitude));
                                 } else {
-                                    if (System.currentTimeMillis() - mHightVoice > 5000) {//高音时间断开后5s表示，持续声音已断开
-                                        mVoiceBreak = true;
-                                        mHightVoiceEnd = mHightVoice;//记载声音最后持续时间段的尾节点
-                                        long duration = mHightVoiceEnd - mHightVoiceStart;
-                                        Log.d("连续声音时间: ", String.valueOf(duration));
-                                        //Log.d("声音断: ", String.valueOf(maxAmplitude));
+                                    if (System.currentTimeMillis() - mCurrentValidVoiceTime > AFTER_VALID_VOICE_DURATION) {//高音时间断开后5s表示，持续声音已断开
+                                        mValidVoiceBreak = true;
+                                        if (mValidVoiceEnd == mCurrentValidVoiceTime){
+                                            Log.d("持续低音: ", String.valueOf(maxAmplitude));
+                                            continue;
+                                        }
+                                        mValidVoiceEnd = mCurrentValidVoiceTime;//记载声音最后持续时间段的尾节点
+                                        mContinueVoiceDuration[1] = mValidVoiceEnd;
+                                        mContinueVoiceList.add(mContinueVoiceDuration);
+                                        long duration = mValidVoiceEnd - mValidVoiceStart;
+                                        if (duration>=VALID_VOICE_DURATION_MIN) {
+                                            Log.d("连续声音时间: ", String.valueOf(duration));
+                                            runOnUiThread(new Runnable() {
+                                                @Override
+                                                public void run() {
+                                                    String startTime = formatTimestamp(mValidVoiceStart);
+                                                    String endTime = formatTimestamp(mValidVoiceEnd);
+                                                    ((TextView) findViewById(R.id.text)).append(startTime + "——>" + endTime + "\n");
+                                                }
+                                            });
+                                        }
                                     }
                                     Log.d("声音低: ", String.valueOf(maxAmplitude));
                                 }
-                                /*runOnUiThread(new Runnable() {
-                                    @Override
-                                    public void run() {
-                                        ((TextView)findViewById(R.id.text)).setText();
-                                    }
-                                });*/
                             }
                             Thread.sleep(100);
                         } catch (InterruptedException e) {
@@ -92,6 +117,13 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         }).start();
+    }
+
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss", Locale.CHINA);
+
+    private String formatTimestamp(long ms){
+        Date date = new Date(ms);
+        return sdf.format(date);
     }
 
     public void stopRecord(){
