@@ -2,6 +2,8 @@ package cn.bvin.app.rebolectric;
 
 import android.content.Intent;
 
+import junit.framework.Assert;
+
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.robolectric.Robolectric;
@@ -24,7 +26,8 @@ public class MainActivityTest {
         MainActivity mainActivity = Robolectric.setupActivity(MainActivity.class);
         mainActivity.findViewById(R.id.button).performClick();
         Intent intent = LoginActivity.getIntent(mainActivity);
-        assertThat(shadowOf(mainActivity).getNextStartedActivity()).isEqualTo(intent);
+        //assertThat(shadowOf(mainActivity).getNextStartedActivity()).isEqualTo(intent);
+        Assert.assertEquals(shadowOf(mainActivity).getNextStartedActivity(),intent);
     }
 
 }
