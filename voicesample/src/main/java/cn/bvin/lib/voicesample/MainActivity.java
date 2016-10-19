@@ -18,6 +18,7 @@ public class MainActivity extends AppCompatActivity {
 
     private MediaRecorder mMediaRecorder;
     private boolean mRecording;
+    private File mOutputFile;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,15 +32,15 @@ public class MainActivity extends AppCompatActivity {
         if (mMediaRecorder == null) {
             mMediaRecorder = new MediaRecorder();
             mMediaRecorder.setAudioSource(MediaRecorder.AudioSource.MIC);
-            File file = new File(getCacheDir(),"tmp.amr");
-            if (!file.exists()) {
+            mOutputFile = new File(getCacheDir(),"tmp.amr");
+            if (!mOutputFile.exists()) {
                 try {
-                    file.createNewFile();
+                    mOutputFile.createNewFile();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
-            mMediaRecorder.setOutputFile(file.getAbsolutePath());
+            mMediaRecorder.setOutputFile(mOutputFile.getAbsolutePath());
             mMediaRecorder.setOutputFormat(MediaRecorder.OutputFormat.THREE_GPP);
             mMediaRecorder.setAudioEncoder(MediaRecorder.AudioEncoder.AMR_NB);
             try {
@@ -131,6 +132,9 @@ public class MainActivity extends AppCompatActivity {
         mMediaRecorder.stop();
         mMediaRecorder.release();
         mMediaRecorder = null;
+        if (mOutputFile != null) {
+            mOutputFile.delete();//缓存目录下的文件，是否有必要删除
+        }
     }
 
     @Override
