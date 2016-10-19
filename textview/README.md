@@ -1,0 +1,1 @@
+实际证明，父容器宽度限制小于子容器显示宽度，不管TextView的宽度是wrap_content或者match_parent都可以显示ellipsize
