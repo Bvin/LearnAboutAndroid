@@ -1,17 +1,13 @@
 package cn.rainbow.westore.textutils;
 
-import android.annotation.TargetApi;
-import android.os.Build;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.text.TextDirectionHeuristics;
+import android.text.Layout;
 import android.text.TextUtils;
 import android.util.Log;
-import android.view.View;
-import android.view.ViewTreeObserver;
 import android.widget.TextView;
 
-import static android.os.Build.VERSION.SDK;
+import cn.bvin.lib.base.text.Ellipsize;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -28,9 +24,16 @@ public class MainActivity extends AppCompatActivity {
         CharSequence ch = TextUtils.commaEllipsize(s,text.getPaint(),avail,"one more","%d 等等");
         Log.d("onCreate: ",ch.toString());
 
-        ch = TextUtils.ellipsize(s,text.getPaint(),avail, TextUtils.TruncateAt.END);
+        float rw = Layout.getDesiredWidth(s,text.getPaint());
+        Log.d("行宽-"+rw,"view宽-"+avail);
 
-        text.setText(ch);
+        String afterTruncate = "等等";
+        float afterTruncateDesiredWidth = Layout.getDesiredWidth(afterTruncate,text.getPaint());
+
+
+        ch = TextUtils.ellipsize(s,text.getPaint(),avail-afterTruncateDesiredWidth, TextUtils.TruncateAt.END);
+
+        text.setText(Ellipsize.concat(s,afterTruncate,avail,text.getPaint(), TextUtils.TruncateAt.END));
 
 
         String[] stringArray =  TextUtils.split(s,",");
