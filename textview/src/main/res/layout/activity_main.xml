@@ -28,4 +28,11 @@
 
     </LinearLayout>
 
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/rv"
+        android:background="#fff"
+        tools:listitem="@layout/horizontal_scroll_goods_item"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"/>
+
 </RelativeLayout>
