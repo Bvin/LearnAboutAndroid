@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:app="http://schemas.android.com/apk/res-auto"
+      xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:icon="@android:drawable/ic_menu_mapmode" android:title="首页"
+          android:id="@+id/first"/>
+    <item android:title="发现"
+          android:icon="@android:drawable/ic_menu_gallery"
+          android:id="@+id/find"/>
+    <item android:title="我的"
+          android:icon="@android:drawable/stat_sys_vp_phone_call"
+          android:id="@+id/my"/>
+
+</menu>
