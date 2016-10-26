@@ -1,13 +1,12 @@
 package cn.bvin.app.proguard;
 
 
-import java.io.Serializable;
 
 /**
  * Created by bvin on 2016/10/26.
  */
 
-public class Foo implements Serializable{
+public class Foo{
 
 
     /**

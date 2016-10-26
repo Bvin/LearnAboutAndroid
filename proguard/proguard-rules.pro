@@ -15,3 +15,5 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+#-keep class cn.bvin.app.proguard.Foo{*;}
+# gralde开启混淆,没有保留这个Foo类，Toast弹出的是空的字符串
