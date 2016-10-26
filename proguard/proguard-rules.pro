@@ -17,3 +17,11 @@
 #}
 #-keep class cn.bvin.app.proguard.Foo{*;}
 # gralde开启混淆,没有保留这个Foo类，Toast弹出的是空的字符串
+#-keepnames class * implements java.io.Serializable
+#-keepclassmembers class * implements java.io.Serializable {
+    #private <fields>;
+    #private <methods>;
+    #!代表不保留，即会混淆
+#}
+-keep class cn.bvin.app.proguard.Bar{*;}
+-keep public class * extends cn.bvin.app.proguard.Bar
