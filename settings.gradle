@@ -1,1 +1,1 @@
-include ':baselibrary', ':proguard'
+include ':baselibrary', ':proguard', ':jar'

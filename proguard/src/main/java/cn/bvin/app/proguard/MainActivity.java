@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Toast;
 
+import com.example.MyClass;
 import com.google.gson.Gson;
 
 public class MainActivity extends AppCompatActivity {
@@ -22,6 +23,10 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View view) {
                 Toast.makeText(MainActivity.this, foo.getMsg(), Toast.LENGTH_SHORT).show();
+                /*MyClass myClass = new MyClass();
+                myClass.setFoo("Foo!");
+                myClass.setI(45);
+                NextActivity.start(MainActivity.this, myClass);*/
             }
         });
     }

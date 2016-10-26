@@ -1,12 +1,13 @@
 package cn.bvin.app.proguard;
 
 
+import java.io.Serializable;
 
 /**
  * Created by bvin on 2016/10/26.
  */
 
-public class Foo{
+public class Foo implements Serializable{
 
 
     /**
@@ -45,6 +46,9 @@ public class Foo{
         return msg;
     }
 
+    public void setMsg(String msg) {
+        this.msg = msg;
+    }
 
     public Object getFare() {
         return fare;
