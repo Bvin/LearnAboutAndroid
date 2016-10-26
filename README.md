@@ -1,3 +1,3 @@
 # Android相关研究
 ----------
-每个Module均代表某个问题的实践认证！
+每个Module均代表某个问题的Best practice！
