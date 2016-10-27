@@ -17,7 +17,7 @@ android {
     buildTypes {
         debug{
             applicationIdSuffix ".debug"
-            manifestPlaceholders = [app_name:'gralde.debug']
+            manifestPlaceholders = [app_name:"gralde"+applicationIdSuffix]
         }
         release {
             minifyEnabled false

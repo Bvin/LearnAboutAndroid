@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Gradle</string>
+    <string name="hello">hello</string>
 </resources>
