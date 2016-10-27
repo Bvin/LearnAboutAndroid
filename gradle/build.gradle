@@ -17,17 +17,17 @@ android {
     buildTypes {
         debug{
             applicationIdSuffix ".debug"
-            manifestPlaceholders = [app_name:"gralde"+applicationIdSuffix]
+            resValue "string", "app_name", "gralde"+applicationIdSuffix+defaultConfig.versionName
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
-            manifestPlaceholders = [app_name:'gralde']
+            resValue "string", "app_name", "gralde"+applicationIdSuffix+defaultConfig.versionName
         }
         staging{
             initWith(buildTypes.debug)
             applicationIdSuffix ".staging"
-            manifestPlaceholders = [app_name:'gralde.staging']
+            resValue "string", "app_name", "gralde"+applicationIdSuffix+defaultConfig.versionName
         }
     }
     applicationVariants.all { variant ->
