@@ -1,1 +1,1 @@
-include ':baselibrary', ':proguard', ':jar'
+include ':gradle'

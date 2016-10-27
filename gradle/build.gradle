@@ -1,0 +1,51 @@
+apply plugin: 'com.android.application'
+
+android {
+    compileSdkVersion 25
+    buildToolsVersion "25.0.0"
+
+    defaultConfig {
+        applicationId "cn.bvin.app.gradle"
+        minSdkVersion 9
+        targetSdkVersion 25
+        versionCode 1
+        versionName "1.0"
+
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+
+    }
+    buildTypes {
+        debug{
+            applicationIdSuffix ".debug"
+            manifestPlaceholders = [app_name:'gralde.debug']
+        }
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+            manifestPlaceholders = [app_name:'gralde']
+        }
+        staging{
+            initWith(buildTypes.debug)
+            applicationIdSuffix ".staging"
+            manifestPlaceholders = [app_name:'gralde.staging']
+        }
+    }
+    applicationVariants.all { variant ->
+        if (variant.signingConfig != null){
+            println(variant.signingConfig.storeFile.absolutePath)
+        }
+        variant.outputs.each { output ->
+            output.outputFile = new File(output.outputFile.parent+"/${variant.buildType.name}",
+                    "${variant.name}-${variant.versionName}.apk")
+        }
+    }
+}
+
+dependencies {
+    compile fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:25.0.0'
+    testCompile 'junit:junit:4.12'
+}
