@@ -1,6 +1,7 @@
 package cn.bvin.app.bottomsheet;
 
 import android.support.design.widget.BottomSheetDialog;
+import android.support.v4.app.FragmentActivity;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,7 +16,7 @@ import java.util.List;
 import cn.bvin.lib.base.adapter.SimpleRecyclerAdapter;
 import cn.bvin.lib.base.view.BaseViewHolder;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends FragmentActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
