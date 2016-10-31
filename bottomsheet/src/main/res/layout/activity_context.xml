@@ -13,7 +13,7 @@
         app:layout_behavior="@string/bottom_sheet_behavior"
         app:behavior_peekHeight="128dp"
         app:behavior_hideable="false"
-        android:background="@android:color/white"
+        android:background="#9fff"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
