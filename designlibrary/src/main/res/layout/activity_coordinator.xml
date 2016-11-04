@@ -8,12 +8,18 @@
     android:layout_height="match_parent"
     tools:context="cn.bvin.app.designlibrary.coordinator.CoordinatorActivity">
 
-    <View
-        android:background="#9c4"
+    <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
-        app:layout_scrollFlags="scroll|exitUntilCollapsed"
-        app:layout_behavior="cn.bvin.app.designlibrary.coordinator.MyBehavior"
-        android:layout_height="50dp"/>
+        android:layout_height="wrap_content">
+
+        <android.support.v7.widget.Toolbar
+            android:background="#9c4"
+            android:layout_width="match_parent"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:layout_height="50dp"/>
+
+    </android.support.design.widget.AppBarLayout>
+
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/recycler_view"
@@ -24,6 +30,7 @@
         android:id="@+id/fab"
         android:layout_gravity="bottom|right"
         android:layout_margin="10dp"
+        app:layout_behavior="cn.bvin.app.designlibrary.coordinator.DependentBehavior"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
