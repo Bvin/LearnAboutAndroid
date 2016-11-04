@@ -2,6 +2,7 @@ package cn.bvin.app.designlibrary;
 
 import android.content.Context;
 import android.content.Intent;
+import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -48,6 +49,13 @@ public class CoordinatorActivity extends AppCompatActivity {
                 ((TextView)holder.itemView).setText(s);
             }
 
+        });
+
+        findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Snackbar.make(v,"Too long long long!",Snackbar.LENGTH_LONG).show();
+            }
         });
     }
 }
