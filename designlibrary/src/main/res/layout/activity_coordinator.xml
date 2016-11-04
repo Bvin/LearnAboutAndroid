@@ -6,12 +6,13 @@
     android:id="@+id/activity_coordinator"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="cn.bvin.app.designlibrary.CoordinatorActivity">
+    tools:context="cn.bvin.app.designlibrary.coordinator.CoordinatorActivity">
 
     <View
         android:background="#9c4"
         android:layout_width="match_parent"
         app:layout_scrollFlags="scroll|exitUntilCollapsed"
+        app:layout_behavior="cn.bvin.app.designlibrary.coordinator.MyBehavior"
         android:layout_height="50dp"/>
 
     <android.support.v7.widget.RecyclerView
