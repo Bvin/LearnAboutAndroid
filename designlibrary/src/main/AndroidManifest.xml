@@ -19,7 +19,7 @@
         </activity>
         <activity android:name=".FABActivity">
         </activity>
-        <activity android:name=".CoordinatorActivity">
+        <activity android:name=".coordinator.CoordinatorActivity">
         </activity>
     </application>
 

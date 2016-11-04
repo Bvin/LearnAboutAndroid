@@ -1,11 +1,11 @@
 package cn.bvin.app.designlibrary;
 
-import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.view.MenuItem;
 import android.view.View;
+
+import cn.bvin.app.designlibrary.coordinator.CoordinatorActivity;
 
 public class MainActivity extends AppCompatActivity {
 

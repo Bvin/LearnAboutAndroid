@@ -1,4 +1,4 @@
-package cn.bvin.app.designlibrary;
+package cn.bvin.app.designlibrary.coordinator;
 
 import android.content.Context;
 import android.content.Intent;
@@ -13,6 +13,7 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import cn.bvin.app.designlibrary.R;
 import cn.bvin.lib.base.adapter.SimpleRecyclerAdapter;
 import cn.bvin.lib.base.res.ResourcesFinder;
 import cn.bvin.lib.base.view.BaseViewHolder;
