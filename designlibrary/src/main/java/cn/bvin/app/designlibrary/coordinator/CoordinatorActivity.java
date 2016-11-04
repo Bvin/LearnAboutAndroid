@@ -55,7 +55,13 @@ public class CoordinatorActivity extends AppCompatActivity {
         findViewById(R.id.fab).setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Snackbar.make(v,"Too long long long!",Snackbar.LENGTH_LONG).show();
+                Snackbar.make(v,"Too long long long!",Snackbar.LENGTH_LONG)
+                        .setAction("Page", new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                SwipeDissmisActivity.start(CoordinatorActivity.this);
+                            }
+                        }).show();
             }
         });
     }

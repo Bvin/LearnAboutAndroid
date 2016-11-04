@@ -21,6 +21,13 @@
         </activity>
         <activity android:name=".coordinator.CoordinatorActivity">
         </activity>
+        <activity
+            android:name=".coordinator.PageActivity"
+            android:label="@string/title_activity_page"
+            android:theme="@style/AppTheme">
+        </activity>
+        <activity android:name=".coordinator.SwipeDissmisActivity">
+        </activity>
     </application>
 
 </manifest>

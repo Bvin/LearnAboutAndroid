@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">DesignLibrary</string>
+    <string name="title_activity_page">PageActivity</string>
 </resources>

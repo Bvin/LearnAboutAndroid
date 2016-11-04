@@ -12,22 +12,36 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <!--scroll可划动(直邮申明此属性的才有以下才有效果)
+        <android.support.design.widget.CollapsingToolbarLayout
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
+            app:contentScrim="@color/colorAccent"
+            app:expandedTitleMarginStart="30dp"
+            android:fitsSystemWindows="true"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <!--scroll可划动(直邮申明此属性的才有以下才有效果)
         enterAlways:上滑隐藏,下滑可见
         enterAlwaysCollapsed:下滑一直收缩，minHeight部分可见，滑到顶部才展开全部
         exitUntilCollapsed：上滑时，当展开的View被收起时才会滚动recyclerView
         snap:具有粘性，离到很近的时候自动贴过去
         -->
-        <android.support.v7.widget.Toolbar
-            android:layout_width="match_parent"
-            app:layout_scrollFlags="scroll|enterAlwaysCollapsed|exitUntilCollapsed|snap"
-            android:minHeight="30dp"
-            android:layout_height="50dp"/>
 
-        <View
-            android:background="#9c4"
-            android:layout_width="match_parent"
-            android:layout_height="50dp"/>
+            <View
+                android:background="#9c4"
+                app:layout_collapseMode="parallax"
+                app:layout_collapseParallaxMultiplier="0.7"
+                android:layout_width="match_parent"
+                android:layout_height="200dp"/>
+
+            <android.support.v7.widget.Toolbar
+                android:layout_width="match_parent"
+                app:layout_collapseMode="pin"
+                android:minHeight="30dp"
+                android:layout_height="50dp"/>
+
+        </android.support.design.widget.CollapsingToolbarLayout>
+
 
     </android.support.design.widget.AppBarLayout>
 
