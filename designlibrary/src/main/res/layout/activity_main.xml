@@ -19,19 +19,18 @@
             android:layout_height="wrap_content"
             android:text="Hello World!"/>
 
-        <android.support.design.widget.BottomNavigationView
+        <!--<android.support.design.widget.BottomNavigationView
             app:menu="@menu/navigations"
             app:itemBackground="@color/colorAccent"
             app:itemTextColor="@android:color/white"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:id="@+id/bvv"/>
+            android:id="@+id/bvv"/>-->
 
     </LinearLayout>
 
     <android.support.design.widget.FloatingActionButton
         android:id="@+id/fab"
-        app:layout_anchor="@id/bvv"
         app:layout_anchorGravity="left|center_vertical"
         app:fabSize="normal"
         app:backgroundTint="#fe473c"
