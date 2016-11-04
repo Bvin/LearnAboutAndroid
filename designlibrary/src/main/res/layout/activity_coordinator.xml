@@ -12,10 +12,21 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
+        <!--scroll可划动(直邮申明此属性的才有以下才有效果)
+        enterAlways:上滑隐藏,下滑可见
+        enterAlwaysCollapsed:下滑一直收缩，minHeight部分可见，滑到顶部才展开全部
+        exitUntilCollapsed：上滑时，当展开的View被收起时才会滚动recyclerView
+        snap:具有粘性，离到很近的时候自动贴过去
+        -->
         <android.support.v7.widget.Toolbar
+            android:layout_width="match_parent"
+            app:layout_scrollFlags="enterAlwaysCollapsed|exitUntilCollapsed|snap"
+            android:minHeight="30dp"
+            android:layout_height="50dp"/>
+
+        <View
             android:background="#9c4"
             android:layout_width="match_parent"
-            app:layout_scrollFlags="scroll|enterAlways"
             android:layout_height="50dp"/>
 
     </android.support.design.widget.AppBarLayout>
