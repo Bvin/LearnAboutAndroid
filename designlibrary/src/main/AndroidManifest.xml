@@ -19,6 +19,8 @@
         </activity>
         <activity android:name=".FABActivity">
         </activity>
+        <activity android:name=".CoordinatorActivity">
+        </activity>
     </application>
 
 </manifest>

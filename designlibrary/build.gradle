@@ -1,13 +1,13 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 24
-    buildToolsVersion "25.0.0"
+    compileSdkVersion COMPILE_SDK_VERSION.toInteger()
+    buildToolsVersion '25.0.0'
 
     defaultConfig {
         applicationId "cn.bvin.app.designlibrary"
         minSdkVersion 9
-        targetSdkVersion 25
+        targetSdkVersion TARGET_SDK_VERSION
         versionCode 1
         versionName "1.0"
 
@@ -29,6 +29,7 @@ dependencies {
     })
     compile 'com.android.support:appcompat-v7:25.0.0'
     testCompile 'junit:junit:4.12'
-    compile 'com.android.support:design:25.0.0'
-    compile 'com.android.support:recyclerview-v7:25.0.0'
+    compile "com.android.support:design:${SUPPORT_LIB_VERSION}"
+    compile "com.android.support:recyclerview-v7:${SUPPORT_LIB_VERSION}"
+    compile project(':baselibrary')
 }
