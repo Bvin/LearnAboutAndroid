@@ -28,6 +28,8 @@
         </activity>
         <activity android:name=".coordinator.SwipeDissmisActivity">
         </activity>
+        <activity android:name=".coordinator.ItemTouchHelperActivity">
+        </activity>
     </application>
 
 </manifest>

@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.view.View;
 
 import cn.bvin.app.designlibrary.coordinator.CoordinatorActivity;
+import cn.bvin.app.designlibrary.coordinator.ItemTouchHelperActivity;
 
 public class MainActivity extends AppCompatActivity {
 
@@ -24,7 +25,8 @@ public class MainActivity extends AppCompatActivity {
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                CoordinatorActivity.start(MainActivity.this);
+                //CoordinatorActivity.start(MainActivity.this);
+                ItemTouchHelperActivity.start(MainActivity.this);
             }
         });
     }
