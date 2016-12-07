@@ -20,14 +20,14 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-           <!-- <TextView
+            <TextView
                 android:text="标题"
+                app:layout_scrollFlags="scroll"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>-->
+                android:layout_height="wrap_content"/>
             <View
                 android:background="@color/colorAccent"
                 android:layout_width="match_parent"
-                app:layout_scrollFlags="scroll"
                 android:layout_height="60dp"/>
 
             <TextView
