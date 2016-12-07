@@ -225,9 +225,9 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         // force the bounds of the progress circle inside the circle view to
         // update by setting it to null before updating its size and then
         // re-setting it
-        mCircleView.setImageDrawable(null);
+        cast(mCircleView).setImageDrawable(null);
         mProgress.updateSizes(size);
-        mCircleView.setImageDrawable(mProgress);
+        cast(mCircleView).setImageDrawable(mProgress);
     }
 
 
@@ -283,7 +283,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         mCircleView = new CircleImageView(getContext(), CIRCLE_BG_LIGHT, CIRCLE_DIAMETER/2);
         mProgress = new MaterialProgressDrawable(getContext(), this);
         mProgress.setBackgroundColor(CIRCLE_BG_LIGHT);
-        mCircleView.setImageDrawable(mProgress);
+        cast(mCircleView).setImageDrawable(mProgress);
         mCircleView.setVisibility(View.GONE);
         addView(mCircleView);
     }
@@ -344,7 +344,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         };
         mScaleAnimation.setDuration(mMediumAnimationDuration);
         if (listener != null) {
-            mCircleView.setAnimationListener(listener);
+            cast(mCircleView).setAnimationListener(listener);
         }
         mCircleView.clearAnimation();
         mCircleView.startAnimation(mScaleAnimation);
@@ -384,9 +384,15 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
             }
         };
         mScaleDownAnimation.setDuration(SCALE_DOWN_DURATION);
-        mCircleView.setAnimationListener(listener);
+        cast(mCircleView).setAnimationListener(listener);
         mCircleView.clearAnimation();
         mCircleView.startAnimation(mScaleDownAnimation);
+    }
+
+    //临时方法
+    private CircleImageView cast(View view) {
+        if (view instanceof CircleImageView) return (CircleImageView) view;
+        return null;
     }
 
     private void startProgressAlphaStartAnimation() {
@@ -413,7 +419,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         };
         alpha.setDuration(ALPHA_ANIMATION_DURATION);
         // Clear out the previous animation listeners.
-        mCircleView.setAnimationListener(null);
+        cast(mCircleView).setAnimationListener(null);
         mCircleView.clearAnimation();
         mCircleView.startAnimation(alpha);
         return alpha;
@@ -974,7 +980,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         mAnimateToCorrectPosition.setDuration(ANIMATE_TO_TRIGGER_DURATION);
         mAnimateToCorrectPosition.setInterpolator(mDecelerateInterpolator);
         if (listener != null) {
-            mCircleView.setAnimationListener(listener);
+            cast(mCircleView).setAnimationListener(listener);
         }
         mCircleView.clearAnimation();
         mCircleView.startAnimation(mAnimateToCorrectPosition);
@@ -986,7 +992,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         mPeek.setDuration(500);
         mPeek.setInterpolator(mDecelerateInterpolator);
         if (listener != null) {
-            mCircleView.setAnimationListener(listener);
+            cast(mCircleView).setAnimationListener(listener);
         }
         mCircleView.clearAnimation();
         mCircleView.startAnimation(mPeek);
@@ -1002,7 +1008,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
             mAnimateToStartPosition.setDuration(ANIMATE_TO_START_DURATION);
             mAnimateToStartPosition.setInterpolator(mDecelerateInterpolator);
             if (listener != null) {
-                mCircleView.setAnimationListener(listener);
+                cast(mCircleView).setAnimationListener(listener);
             }
             mCircleView.clearAnimation();
             mCircleView.startAnimation(mAnimateToStartPosition);
@@ -1075,7 +1081,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         };
         mScaleDownToStartAnimation.setDuration(SCALE_DOWN_DURATION);
         if (listener != null) {
-            mCircleView.setAnimationListener(listener);
+            cast(mCircleView).setAnimationListener(listener);
         }
         mCircleView.clearAnimation();
         mCircleView.startAnimation(mScaleDownToStartAnimation);
