@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.SwipeRefreshLayout
+<cn.bvin.app.swiperefresh.OriginSwipeRefreshLayout
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     xmlns:app="http://schemas.android.com/apk/res-auto"
@@ -77,4 +77,4 @@ CoordinatorLayout必须作为整个布局的父布局容器。 给需要滑动�
 
     </android.support.design.widget.CoordinatorLayout>
 
-</android.support.v4.widget.SwipeRefreshLayout>
+</cn.bvin.app.swiperefresh.OriginSwipeRefreshLayout>
