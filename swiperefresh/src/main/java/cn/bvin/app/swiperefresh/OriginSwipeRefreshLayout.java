@@ -532,9 +532,15 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         final int childTop = getPaddingTop();
         final int childWidth = width - getPaddingLeft() - getPaddingRight();
         final int childHeight = height - getPaddingTop() - getPaddingBottom();
-        child.layout(childLeft, childTop, childLeft + childWidth, childTop + childHeight);
+
         int circleWidth = mCircleView.getMeasuredWidth();
         int circleHeight = mCircleView.getMeasuredHeight();
+
+        //paddingTop + refreshHeight(下拉出来的view的高度) + offsetTop(距离顶部的偏差，通常是滑动产生的)
+        int bellow = mCurrentTargetOffsetTop + circleHeight + childTop;
+
+        child.layout(childLeft, bellow , childLeft + childWidth, childTop + childHeight);
+
         mCircleView.layout((width / 2 - circleWidth / 2), mCurrentTargetOffsetTop,
                 (width / 2 + circleWidth / 2), mCurrentTargetOffsetTop + circleHeight);
     }
