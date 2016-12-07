@@ -12,6 +12,7 @@
     tools:context="cn.bvin.app.swiperefresh.MainActivity">
 
     <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_refresh_layout"
         android:background="@color/colorAccent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content">
