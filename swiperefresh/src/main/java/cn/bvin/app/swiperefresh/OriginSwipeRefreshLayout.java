@@ -85,6 +85,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
     private boolean mIsBeingDragged;
     private int mActivePointerId = INVALID_POINTER;
     // Whether this item is scaled up rather than clipped
+    // 下拉过程中是否应用缩放动画
     private boolean mScale;
 
     // Target is returning to its start offset because it was cancelled or a
