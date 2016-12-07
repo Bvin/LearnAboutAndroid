@@ -26,13 +26,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
             <View
+                app:layout_scrollFlags="scroll"
                 android:background="@color/colorAccent"
                 android:layout_width="match_parent"
                 android:layout_height="60dp"/>
 
             <TextView
                 android:text="Pin栏"
-                app:layout_collapseMode="pin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"/>
 
