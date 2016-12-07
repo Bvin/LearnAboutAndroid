@@ -95,7 +95,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
             android.R.attr.enabled
     };
 
-    private CircleImageView mCircleView;
+    private View mCircleView;
     private int mCircleViewIndex = -1;
 
     protected int mFrom;
