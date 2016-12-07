@@ -1,1 +1,1 @@
-include ':baselibrary', ':designlibrary'
+include ':swiperefresh'
