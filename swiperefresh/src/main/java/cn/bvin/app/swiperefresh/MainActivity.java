@@ -11,7 +11,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.main_container);
-        final SwipeRefreshLayout swipeRefreshLayout = (SwipeRefreshLayout) findViewById(R.id.activity_main);
+        final OriginSwipeRefreshLayout swipeRefreshLayout = (OriginSwipeRefreshLayout) findViewById(R.id.activity_main);
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
