@@ -8,6 +8,8 @@ FreeLine环境：
 SwipeRefresh：
 
 1. SwipeRefreshLayout宽高是match_parent，手动设置wrap_content无效
+2. (旧版)子View必须是可Scroll的View
+3. (旧版)一定要设置RefreshListener
 
 CoordinateLayout:
 
