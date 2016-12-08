@@ -22,11 +22,12 @@ public class NextActivity extends AppCompatActivity implements OldSwipeRefreshLa
         setContentView(R.layout.activity_next);
         osr = (OldSwipeRefreshLayout) findViewById(R.id.activity_next);
         osr.setOnRefreshListener(this);
+        osr.setColorSchemeRes(R.color.colorAccent,R.color.colorPrimary,android.R.color.holo_green_dark,android.R.color.holo_orange_dark);
     }
 
     @Override
     public void onRefresh() {
-        osr.setRefreshing(false);
+        execute();
     }
 
     @Override
@@ -45,5 +46,24 @@ public class NextActivity extends AppCompatActivity implements OldSwipeRefreshLa
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void execute(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        osr.setRefreshing(false);
+                    }
+                });
+            }
+        }).start();
     }
 }

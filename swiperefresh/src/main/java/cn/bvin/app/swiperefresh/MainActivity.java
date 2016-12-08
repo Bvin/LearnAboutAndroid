@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         setContentView(R.layout.main_container);
         swipeRefreshLayout = (OriginSwipeRefreshLayout) findViewById(R.id.activity_main);
         swipeRefreshLayout.setOnRefreshListener(this);
-
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent,R.color.colorPrimary,R.color.colorPrimaryDark);
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -30,7 +30,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
 
     @Override
     public void onRefresh() {
-        swipeRefreshLayout.setRefreshing(false);
+        execute();
     }
 
     @Override
@@ -45,7 +45,29 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             swipeRefreshLayout.setRefreshing(true);
             onRefresh();
             return true;
+        }else if (item.getItemId() == R.id.next){
+            NextActivity.start(this);
+            return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void execute(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        }).start();
     }
 }
