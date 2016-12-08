@@ -105,7 +105,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
 
     protected int mOriginalOffsetTop;
 
-    private MaterialProgressDrawable mProgress;
+    //private MaterialProgressDrawable mProgress;
 
     private Animation mScaleAnimation;
 
@@ -141,15 +141,12 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         public void onAnimationEnd(Animation animation) {
             if (mRefreshing) {
                 // Make sure the progress view is fully visible
-                mProgress.setAlpha(MAX_ALPHA);
-                mProgress.start();
                 if (mNotify) {
                     if (mListener != null) {
                         mListener.onRefresh();
                     }
                 }
             } else {
-                mProgress.stop();
                 mCircleView.setVisibility(View.GONE);
                 setColorViewAlpha(MAX_ALPHA);
                 // Return the circle to its start position
@@ -166,7 +163,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
 
     private void setColorViewAlpha(int targetAlpha) {
         mCircleView.getBackground().setAlpha(targetAlpha);
-        mProgress.setAlpha(targetAlpha);
     }
 
     /**
@@ -223,12 +219,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         } else {
             mCircleHeight = mCircleWidth = (int) (CIRCLE_DIAMETER * metrics.density);
         }
-        // force the bounds of the progress circle inside the circle view to
-        // update by setting it to null before updating its size and then
-        // re-setting it
-        cast(mCircleView).setImageDrawable(null);
-        mProgress.updateSizes(size);
-        cast(mCircleView).setImageDrawable(mProgress);
     }
 
 
@@ -282,9 +272,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
 
     private void createProgressView() {
         mCircleView = new CircleImageView(getContext(), CIRCLE_BG_LIGHT, CIRCLE_DIAMETER/2);
-        mProgress = new MaterialProgressDrawable(getContext(), this);
-        mProgress.setBackgroundColor(CIRCLE_BG_LIGHT);
-        cast(mCircleView).setImageDrawable(mProgress);
         mCircleView.setVisibility(View.GONE);
         addView(mCircleView);
     }
@@ -335,7 +322,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
             // Pre API 11, alpha is used in place of scale up to show the
             // progress circle appearing.
             // Don't adjust the alpha during appearance otherwise.
-            mProgress.setAlpha(MAX_ALPHA);
         }
         mScaleAnimation = new Animation() {
             @Override
@@ -396,36 +382,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         return null;
     }
 
-    private void startProgressAlphaStartAnimation() {
-        mAlphaStartAnimation = startAlphaAnimation(mProgress.getAlpha(), STARTING_PROGRESS_ALPHA);
-    }
-
-    private void startProgressAlphaMaxAnimation() {
-        mAlphaMaxAnimation = startAlphaAnimation(mProgress.getAlpha(), MAX_ALPHA);
-    }
-
-    private Animation startAlphaAnimation(final int startingAlpha, final int endingAlpha) {
-        // Pre API 11, alpha is used in place of scale. Don't also use it to
-        // show the trigger point.
-        if (mScale && isAlphaUsedForScale()) {
-            return null;
-        }
-        Animation alpha = new Animation() {
-            @Override
-            public void applyTransformation(float interpolatedTime, Transformation t) {
-                mProgress
-                        .setAlpha((int) (startingAlpha+ ((endingAlpha - startingAlpha)
-                                * interpolatedTime)));
-            }
-        };
-        alpha.setDuration(ALPHA_ANIMATION_DURATION);
-        // Clear out the previous animation listeners.
-        cast(mCircleView).setAnimationListener(null);
-        mCircleView.clearAnimation();
-        mCircleView.startAnimation(alpha);
-        return alpha;
-    }
-
     /**
      * @deprecated Use {@link #setProgressBackgroundColorSchemeResource(int)}
      */
@@ -450,16 +406,8 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
      */
     public void setProgressBackgroundColorSchemeColor(@ColorInt int color) {
         mCircleView.setBackgroundColor(color);
-        mProgress.setBackgroundColor(color);
     }
 
-    /**
-     * @deprecated Use {@link #setColorSchemeResources(int...)}
-     */
-    @Deprecated
-    public void setColorScheme(@ColorInt int... colors) {
-        setColorSchemeResources(colors);
-    }
 
     /**
      * Set the color resources used in the progress animation from color resources.
@@ -487,7 +435,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
     @ColorInt
     public void setColorSchemeColors(int... colors) {
         ensureTarget();
-        mProgress.setColorSchemeColors(colors);
     }
 
     /**
@@ -652,7 +599,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
                 if (yDiff > mTouchSlop && !mIsBeingDragged) {
                     mInitialMotionY = mInitialDownY + mTouchSlop;
                     mIsBeingDragged = true;
-                    mProgress.setAlpha(STARTING_PROGRESS_ALPHA);
                 }
                 break;
 
@@ -828,7 +774,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
     }
 
     private void moveSpinner(float overscrollTop) {
-        mProgress.showArrow(true);
         float originalDragPercent = overscrollTop / mTotalDragDistance;
 
         float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
@@ -851,26 +796,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
             ViewCompat.setScaleX(mCircleView, 1f);
             ViewCompat.setScaleY(mCircleView, 1f);
         }
-        if (overscrollTop < mTotalDragDistance) {
-            if (mScale) {
-                setAnimationProgress(overscrollTop / mTotalDragDistance);
-            }
-            if (mProgress.getAlpha() > STARTING_PROGRESS_ALPHA
-                    && !isAnimationRunning(mAlphaStartAnimation)) {
-                // Animate the alpha
-                startProgressAlphaStartAnimation();
-            }
-            float strokeStart = adjustedPercent * .8f;
-            mProgress.setStartEndTrim(0f, Math.min(MAX_PROGRESS_ANGLE, strokeStart));
-            mProgress.setArrowScale(Math.min(1f, adjustedPercent));
-        } else {
-            if (mProgress.getAlpha() < MAX_ALPHA && !isAnimationRunning(mAlphaMaxAnimation)) {
-                // Animate the alpha
-                startProgressAlphaMaxAnimation();
-            }
-        }
-        float rotation = (-0.25f + .4f * adjustedPercent + tensionPercent * 2) * .5f;
-        mProgress.setProgressRotation(rotation);
         setTargetOffsetTopAndBottom(targetY - mCurrentTargetOffsetTop, true /* requires update */);
     }
 
@@ -880,7 +805,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         } else {
             // cancel refresh
             mRefreshing = false;
-            mProgress.setStartEndTrim(0f, 0f);
             Animation.AnimationListener listener = null;
             if (!mScale) {
                 listener = new Animation.AnimationListener() {
@@ -903,7 +827,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
                 };
             }
             animateOffsetToStartPosition(mCurrentTargetOffsetTop, listener);
-            mProgress.showArrow(false);
         }
     }
 
@@ -1029,7 +952,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
             targetTop = (mFrom + (int) ((endTarget - mFrom) * interpolatedTime));
             int offset = targetTop - mCircleView.getTop();
             setTargetOffsetTopAndBottom(offset, false /* requires update */);
-            mProgress.setArrowScale(1 - interpolatedTime);
         }
     };
 
@@ -1046,7 +968,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
             targetTop = (mFrom + (int) ((endTarget - mFrom) * interpolatedTime));
             int offset = targetTop - mCircleView.getTop();
             setTargetOffsetTopAndBottom(offset, false /* requires update */);
-            mProgress.setArrowScale(1 - interpolatedTime);
         }
     };
 
@@ -1068,7 +989,6 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
                                                       Animation.AnimationListener listener) {
         mFrom = from;
         if (isAlphaUsedForScale()) {
-            mStartingScale = mProgress.getAlpha();
         } else {
             mStartingScale = ViewCompat.getScaleX(mCircleView);
         }
