@@ -406,9 +406,9 @@ public class OldSwipeRefreshLayout extends ViewGroup {
                 if (mDownEvent != null && !mReturningToStart) {
                     final float eventY = event.getY();
                     float yDiff = eventY - mDownEvent.getY();
-                    if (yDiff > mTouchSlop) {
+                    if (yDiff > mTouchSlop) {//最小触摸记录
                         // User velocity passed min velocity; trigger a refresh
-                        if (yDiff > mDistanceToTriggerSync) {
+                        if (yDiff > mDistanceToTriggerSync) {//大于用户定义的触发距离
                             // User movement passed distance; trigger a refresh
                             startRefresh();
                             handled = true;
@@ -422,6 +422,7 @@ public class OldSwipeRefreshLayout extends ViewGroup {
                             if (mPrevY > eventY) {
                                 offsetTop = yDiff - mTouchSlop;
                             }
+                            //更新content的顶部偏移量
                             updateContentOffsetTop((int) (offsetTop * mResistance));
                             if (mPrevY > eventY && (mTarget.getTop() < mTouchSlop)) {
                                 // If the user puts the view back at the top, we
