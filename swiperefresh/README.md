@@ -10,6 +10,7 @@ SwipeRefresh：
 1. SwipeRefreshLayout宽高是match_parent，手动设置wrap_content无效
 2. (旧版)子View必须是可Scroll的View
 3. (旧版)一定要设置RefreshListener
+4. 设置的颜色计划需要看时间保证，时间短的话颜色就不会完整切换
 
 CoordinateLayout:
 

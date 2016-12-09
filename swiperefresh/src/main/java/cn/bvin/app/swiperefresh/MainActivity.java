@@ -18,7 +18,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
         setContentView(R.layout.main_container);
         swipeRefreshLayout = (OriginSwipeRefreshLayout) findViewById(R.id.activity_main);
         swipeRefreshLayout.setOnRefreshListener(this);
-        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent,R.color.colorPrimary,R.color.colorPrimaryDark);
+        swipeRefreshLayout.setColorSchemeResources(R.color.colorAccent,R.color.colorPrimary,android.R.color.holo_green_dark,android.R.color.holo_orange_dark);
         AppBarLayout appBarLayout = (AppBarLayout) findViewById(R.id.appbar);
         appBarLayout.addOnOffsetChangedListener(new AppBarLayout.OnOffsetChangedListener() {
             @Override
@@ -57,7 +57,7 @@ public class MainActivity extends AppCompatActivity implements SwipeRefreshLayou
             @Override
             public void run() {
                 try {
-                    Thread.sleep(3000);
+                    Thread.sleep(6000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
