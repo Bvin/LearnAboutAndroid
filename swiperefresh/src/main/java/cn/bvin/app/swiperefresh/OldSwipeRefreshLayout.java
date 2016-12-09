@@ -220,6 +220,7 @@ public class OldSwipeRefreshLayout extends ViewGroup {
         mListener = listener;
     }
 
+    // 阻力
     public void setResistance(float resistance) {
         this.mResistance = resistance;
     }
@@ -291,8 +292,16 @@ public class OldSwipeRefreshLayout extends ViewGroup {
                 mProgressBar.start();
             } else {
                 mProgressBar.stop();
+                mReturnToStartPosition.run();
             }
         }
+    }
+
+    public void performRefresh() {
+        updateContentOffsetTop((int) (mDistanceToTriggerSync * mResistance));
+        removeCallbacks(mCancel);
+        setRefreshing(true);
+        mListener.onRefresh();
     }
 
     private void ensureTarget() {
@@ -422,7 +431,7 @@ public class OldSwipeRefreshLayout extends ViewGroup {
                             if (mPrevY > eventY) {
                                 offsetTop = yDiff - mTouchSlop;
                             }
-                            //更新content的顶部偏移量
+                            //更新content的顶部偏移量（还没达到用户定义的距离，往下移动自己）
                             updateContentOffsetTop((int) (offsetTop * mResistance));
                             if (mPrevY > eventY && (mTarget.getTop() < mTouchSlop)) {
                                 // If the user puts the view back at the top, we

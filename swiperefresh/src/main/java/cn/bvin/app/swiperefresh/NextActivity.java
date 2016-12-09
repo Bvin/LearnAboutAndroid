@@ -39,8 +39,7 @@ public class NextActivity extends AppCompatActivity implements OldSwipeRefreshLa
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.refresh){
-            osr.setRefreshing(true);
-            onRefresh();
+            osr.performRefresh();
             return true;
         }else if (item.getItemId() == R.id.next){
             return true;
