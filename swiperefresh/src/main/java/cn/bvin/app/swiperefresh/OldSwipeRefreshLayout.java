@@ -303,6 +303,7 @@ public class OldSwipeRefreshLayout extends ViewGroup {
                         "SwipeRefreshLayout can host only one direct child");
             }
             mTarget = getChildAt(0);
+            // 这里猜测mOriginalOffsetTop应该是回到开始位置用的
             mOriginalOffsetTop = mTarget.getTop() + getPaddingTop();
         }
         if (mDistanceToTriggerSync == -1) {
@@ -379,6 +380,7 @@ public class OldSwipeRefreshLayout extends ViewGroup {
         if (mReturningToStart && ev.getAction() == MotionEvent.ACTION_DOWN) {
             mReturningToStart = false;
         }
+        // enable开启||非处于回到开始位置过程中||子View不能上滑了
         if (isEnabled() && !mReturningToStart && !canChildScrollUp()) {
             handled = onTouchEvent(ev);
         }
