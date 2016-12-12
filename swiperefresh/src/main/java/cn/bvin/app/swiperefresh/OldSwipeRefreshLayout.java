@@ -298,6 +298,7 @@ public class OldSwipeRefreshLayout extends ViewGroup {
     }
 
     public void performRefresh() {
+        ensureTarget();
         updateContentOffsetTop((int) (mDistanceToTriggerSync * mResistance));
         removeCallbacks(mCancel);
         setRefreshing(true);
@@ -460,7 +461,7 @@ public class OldSwipeRefreshLayout extends ViewGroup {
 
     private void startRefresh() {
         removeCallbacks(mCancel);
-        mReturnToStartPosition.run();
+        //mReturnToStartPosition.run();
         setRefreshing(true);
         mListener.onRefresh();
     }
