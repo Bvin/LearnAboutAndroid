@@ -13,7 +13,6 @@
 
     <cn.bvin.app.swiperefresh.GestureRefreshLayout
         android:background="@color/colorPrimaryDark"
-        android:enabled="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 

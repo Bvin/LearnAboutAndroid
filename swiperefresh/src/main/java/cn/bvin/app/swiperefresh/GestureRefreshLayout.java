@@ -2,11 +2,15 @@ package cn.bvin.app.swiperefresh;
 
 import android.content.Context;
 import android.content.res.TypedArray;
+import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 
 /**
  * 手势刷新
@@ -17,9 +21,17 @@ public class GestureRefreshLayout extends ViewGroup {
 
     private static final String TAG = "GestureRefreshLayout";
 
-    private View mTarget;
-
     private static final int[] LAYOUT_ATTRS = new int[]{android.R.attr.enabled};
+
+    private View mTarget;
+    private boolean mRefreshing = false;
+
+    // Target is returning to its start offset because it was cancelled or a
+    // refresh was triggered.
+    private boolean mReturningToStart;
+
+    private OnChildScrollUpCallback mChildScrollUpCallback;
+
 
     public GestureRefreshLayout(Context context) {
         this(context, null);
@@ -78,14 +90,61 @@ public class GestureRefreshLayout extends ViewGroup {
         child.layout(childLeft, childTop, childLeft + mTarget.getMeasuredWidth(), childTop + mTarget.getMeasuredHeight());
     }
 
+    public void setChildScrollUpCallback(OnChildScrollUpCallback childScrollUpCallback) {
+        mChildScrollUpCallback = childScrollUpCallback;
+    }
+
+    /**
+     * @return Whether it is possible for the child view of this layout to
+     * scroll up. Override this if the child view is a custom view.
+     */
+    public boolean canChildScrollUp() {
+        if (mChildScrollUpCallback != null) {
+            return mChildScrollUpCallback.canChildScrollUp(this, mTarget);
+        }
+        if (android.os.Build.VERSION.SDK_INT < 14) {
+            if (mTarget instanceof AbsListView) {
+                final AbsListView absListView = (AbsListView) mTarget;
+                return absListView.getChildCount() > 0 &&
+                        (absListView.getFirstVisiblePosition() > 0 ||
+                                absListView.getChildAt(0).getTop() < absListView.getPaddingTop());
+            } else {
+                return ViewCompat.canScrollVertically(mTarget, -1) || mTarget.getScrollY() > 0;
+            }
+        } else {
+            return ViewCompat.canScrollVertically(mTarget, -1);
+        }
+    }
+
+
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-        return isEnabled();
+        if (!isEnabled() || canChildScrollUp() || mReturningToStart || mRefreshing) {// 不拦截（禁止掉了 || 刷新中 ）
+            return false;
+        }
+        return true;
     }
 
     @Override
     public boolean onTouchEvent(MotionEvent event) {
         Log.d(TAG, "onTouchEvent: "+event.toString());
         return super.onTouchEvent(event);
+    }
+
+    /**
+     * Classes that wish to override {@link SwipeRefreshLayout#canChildScrollUp()} method
+     * behavior should implement this interface.
+     */
+    public interface OnChildScrollUpCallback {
+        /**
+         * Callback that will be called when {@link SwipeRefreshLayout#canChildScrollUp()} method
+         * is called to allow the implementer to override its behavior.
+         *
+         * @param parent SwipeRefreshLayout that this callback is overriding.
+         * @param child The child view of SwipeRefreshLayout.
+         *
+         * @return Whether it is possible for the child view of parent layout to scroll up.
+         */
+        boolean canChildScrollUp(GestureRefreshLayout parent, @Nullable View child);
     }
 }
