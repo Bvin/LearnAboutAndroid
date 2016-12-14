@@ -13,6 +13,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 
+
 /**
  * 手势刷新
  * Created by bvin on 2016/12/13.
@@ -23,15 +24,21 @@ public class GestureRefreshLayout extends ViewGroup {
     private static final String TAG = "GestureRefreshLayout";
 
     private static final int[] LAYOUT_ATTRS = new int[]{android.R.attr.enabled};
+    private static final int INVALID_POINTER = -1;
 
     private View mTarget;
     private boolean mRefreshing = false;
+    private int mTouchSlop;
+
+    private float mInitialMotionY;
+    private float mInitialDownY;
 
     // Target is returning to its start offset because it was cancelled or a
     // refresh was triggered.
     private boolean mReturningToStart;
 
     private boolean mIsBeingDragged;
+    private int mActivePointerId = INVALID_POINTER;
 
     private OnChildScrollUpCallback mChildScrollUpCallback;
 
@@ -136,18 +143,50 @@ public class GestureRefreshLayout extends ViewGroup {
 
         switch (ev.getAction()){
             case MotionEvent.ACTION_DOWN:
-
+                mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+                final float initialDownY = getMotionEventY(ev, mActivePointerId);
+                if (initialDownY == -1) {//如果没有有效点击，就往下传递
+                    return false;
+                }
+                mInitialDownY = initialDownY;
                 break;
 
             case MotionEvent.ACTION_MOVE:
+                if (mActivePointerId == INVALID_POINTER) {
+                    Log.e(TAG, "Got ACTION_MOVE event but don't have an active pointer id.");
+                    return false;
+                }
+
+                final float y = getMotionEventY(ev, mActivePointerId);
+                if (y == -1) {
+                    return false;
+                }
+
+                final float yDiff = y - mInitialDownY;
+                if (yDiff > mTouchSlop && !mIsBeingDragged) {
+                    mInitialMotionY = mInitialDownY + mTouchSlop;
+                    mIsBeingDragged = true;// 标志开始拖动
+                    // 这里应该暴露出接口，来定制化应当状态变化
+                    //mProgress.setAlpha(STARTING_PROGRESS_ALPHA);
+                }
                 break;
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
+                mIsBeingDragged = false;
+                mActivePointerId = INVALID_POINTER;
                 break;
         }
 
         return mIsBeingDragged;
+    }
+
+    private float getMotionEventY(MotionEvent ev, int activePointerId) {
+        final int index = MotionEventCompat.findPointerIndex(ev, activePointerId);
+        if (index < 0) {
+            return -1;
+        }
+        return MotionEventCompat.getY(ev, index);
     }
 
     @Override
