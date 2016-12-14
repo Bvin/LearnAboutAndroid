@@ -3,6 +3,7 @@ package cn.bvin.app.swiperefresh;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.util.AttributeSet;
+import android.view.View;
 import android.view.ViewGroup;
 
 /**
@@ -11,6 +12,8 @@ import android.view.ViewGroup;
  */
 
 public class GestureRefreshLayout extends ViewGroup {
+    
+    private View mTarget;
 
     private static final int[] LAYOUT_ATTRS = new int[]{android.R.attr.enabled};
 
@@ -24,6 +27,16 @@ public class GestureRefreshLayout extends ViewGroup {
         final TypedArray a = context.obtainStyledAttributes(attrs, LAYOUT_ATTRS);
         setEnabled(a.getBoolean(0, true));
         a.recycle();
+    }
+
+    private void ensureTarget() {
+        if (mTarget == null) {
+            if (getChildCount() > 2) {
+                throw new IllegalStateException("GestureRefreshLayout can host only 2 direct child");
+            } else {
+                mTarget = getChildAt(0);
+            }
+        }
     }
 
     @Override
