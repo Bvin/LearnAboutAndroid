@@ -170,6 +170,15 @@ public class GestureRefreshLayout extends ViewGroup {
                     //mProgress.setAlpha(STARTING_PROGRESS_ALPHA);
                 }
                 break;
+            case MotionEventCompat.ACTION_POINTER_DOWN: {
+                final int index = MotionEventCompat.getActionIndex(ev);
+                mActivePointerId = MotionEventCompat.getPointerId(ev, index);
+                break;
+            }
+
+            case MotionEventCompat.ACTION_POINTER_UP:
+                onSecondaryPointerUp(ev);
+                break;
 
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_CANCEL:
@@ -179,6 +188,17 @@ public class GestureRefreshLayout extends ViewGroup {
         }
 
         return mIsBeingDragged;
+    }
+
+    private void onSecondaryPointerUp(MotionEvent ev) {
+        final int pointerIndex = MotionEventCompat.getActionIndex(ev);
+        final int pointerId = MotionEventCompat.getPointerId(ev, pointerIndex);
+        if (pointerId == mActivePointerId) {// 获取最新的手指点
+            // This was our active pointer going up. Choose a new
+            // active pointer and adjust accordingly.
+            final int newPointerIndex = pointerIndex == 0 ? 1 : 0;
+            mActivePointerId = MotionEventCompat.getPointerId(ev, newPointerIndex);
+        }
     }
 
     private float getMotionEventY(MotionEvent ev, int activePointerId) {
