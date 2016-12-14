@@ -26,6 +26,7 @@ public class GestureRefreshLayout extends ViewGroup {
 
     private static final int[] LAYOUT_ATTRS = new int[]{android.R.attr.enabled};
     private static final int INVALID_POINTER = -1;
+    private static final float DRAG_RATE = .5f;
 
     private View mTarget;
     private boolean mRefreshing = false;
@@ -164,7 +165,7 @@ public class GestureRefreshLayout extends ViewGroup {
                     return false;
                 }
 
-                final float yDiff = y - mInitialDownY;
+                final float yDiff = y - mInitialDownY;// 如果要支持反向可以用绝对值
                 if (yDiff > mTouchSlop && !mIsBeingDragged) {
                     mInitialMotionY = mInitialDownY + mTouchSlop;
                     mIsBeingDragged = true;// 标志开始拖动
@@ -172,11 +173,6 @@ public class GestureRefreshLayout extends ViewGroup {
                     //mProgress.setAlpha(STARTING_PROGRESS_ALPHA);
                 }
                 break;
-            case MotionEventCompat.ACTION_POINTER_DOWN: {
-                final int index = MotionEventCompat.getActionIndex(ev);
-                mActivePointerId = MotionEventCompat.getPointerId(ev, index);
-                break;
-            }
 
             case MotionEventCompat.ACTION_POINTER_UP:
                 onSecondaryPointerUp(ev);
@@ -212,9 +208,60 @@ public class GestureRefreshLayout extends ViewGroup {
     }
 
     @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        Log.d(TAG, "onTouchEvent: "+event.toString());
-        return super.onTouchEvent(event);
+    public boolean onTouchEvent(MotionEvent ev) {
+        Log.d(TAG, "onTouchEvent: "+ev.toString());
+        final int action = MotionEventCompat.getActionMasked(ev);
+
+        if (mReturningToStart && action == MotionEvent.ACTION_DOWN) {
+            mReturningToStart = false;
+        }
+
+        if (!isEnabled() || mReturningToStart || canChildScrollUp()) {
+            // Fail fast if we're not in a state where a swipe is possible
+            return false;
+        }
+
+        switch (ev.getAction()){
+            case MotionEvent.ACTION_DOWN:
+                mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+                mIsBeingDragged = false;
+                break;
+            case MotionEvent.ACTION_MOVE:
+                final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
+                if (pointerIndex < 0) {
+                    Log.e(TAG, "Got ACTION_MOVE event but have an invalid active pointer id.");
+                    return false;
+                }
+
+                final float y = MotionEventCompat.getY(ev, pointerIndex);
+                final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
+                if (mIsBeingDragged) {
+                    if (overscrollTop > 0) {
+                        startRefresh(overscrollTop);
+                    } else {
+                        return false;
+                    }
+                }
+                break;
+            case MotionEventCompat.ACTION_POINTER_DOWN: {
+                final int index = MotionEventCompat.getActionIndex(ev);
+                mActivePointerId = MotionEventCompat.getPointerId(ev, index);
+                break;
+            }
+
+            case MotionEventCompat.ACTION_POINTER_UP:
+                onSecondaryPointerUp(ev);
+                break;
+            case MotionEvent.ACTION_CANCEL:
+            case MotionEvent.ACTION_UP:
+                break;
+        }
+
+        return true;
+    }
+
+    private void startRefresh(float overscrollTop){
+
     }
 
     /**
