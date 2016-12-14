@@ -25,3 +25,9 @@ AppBarLayout是实现了很多material designs 设计风格应用栏（即滑动
 3. AppBarLayout需要滑动的View绑定AppBarLayout.ScrollingViewBehavior 来关联滑动行为
 
 4. AppBarLayout的大部分作用都是处理Scroll，可以认为是在有scroll的情况才能体现它的作用
+
+自定义View
+
+1. 子类一定调用setMeasuredDimension方法，如果去掉了super.onMeasure()就要手动设置
+2. 一定要measure过的View才能获取到measuredWidth/Height，getMeasuredWidth<<measure
+3. layout过的View才能通过getWidth/height方法获取到真实的值, getWidth/Height<<layout
