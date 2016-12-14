@@ -33,3 +33,6 @@ AppBarLayout是实现了很多material designs 设计风格应用栏（即滑动
 3. layout过的View才能通过getWidth/height方法获取到真实的值, getWidth/Height<<layout
 4. onInterceptTouchEvent返回false，往下传递，返回true就被拦截，点的子视图的时候。点到自己那部分还是
 就传递到onTouchEvent了。
+
+GestureRefresh
+1. 点击子View是不被拦截的，但是如果从子View开始滑动，并且超过了TouchSlop将会拦截，当作是滑动刷新了。
