@@ -17,6 +17,7 @@
         android:layout_height="wrap_content">
 
         <TextView
+            android:padding="10dp"
             android:text="GestureRefreshLayout"
             android:background="@color/colorPrimary"
             android:layout_width="match_parent"
