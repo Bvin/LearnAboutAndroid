@@ -42,6 +42,7 @@ public class NextActivity extends AppCompatActivity implements OldSwipeRefreshLa
             osr.performRefresh();
             return true;
         }else if (item.getItemId() == R.id.next){
+            GestureRefreshActivity.start(this);
             return true;
         }
         return super.onOptionsItemSelected(item);
