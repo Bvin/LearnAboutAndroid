@@ -31,3 +31,5 @@ AppBarLayout是实现了很多material designs 设计风格应用栏（即滑动
 1. 子类一定调用setMeasuredDimension方法，如果去掉了super.onMeasure()就要手动设置
 2. 一定要measure过的View才能获取到measuredWidth/Height，getMeasuredWidth<<measure
 3. layout过的View才能通过getWidth/height方法获取到真实的值, getWidth/Height<<layout
+4. onInterceptTouchEvent返回false，往下传递，返回true就被拦截，点的子视图的时候。点到自己那部分还是
+就传递到onTouchEvent了。

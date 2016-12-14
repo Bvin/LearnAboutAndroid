@@ -12,14 +12,14 @@
     tools:context="cn.bvin.app.swiperefresh.GestureRefreshActivity">
 
     <cn.bvin.app.swiperefresh.GestureRefreshLayout
-        android:background="@color/colorAccent"
+        android:background="@color/colorPrimaryDark"
+        android:enabled="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
+        <Button
             android:padding="10dp"
             android:text="GestureRefreshLayout"
-            android:background="@color/colorPrimary"
             android:layout_width="match_parent"
             android:layout_height="match_parent"/>
 
