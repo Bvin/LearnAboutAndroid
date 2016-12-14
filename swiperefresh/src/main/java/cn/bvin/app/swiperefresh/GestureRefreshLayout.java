@@ -3,6 +3,7 @@ package cn.bvin.app.swiperefresh;
 import android.content.Context;
 import android.content.res.TypedArray;
 import android.support.annotation.Nullable;
+import android.support.v4.view.MotionEventCompat;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.util.AttributeSet;
@@ -29,6 +30,8 @@ public class GestureRefreshLayout extends ViewGroup {
     // Target is returning to its start offset because it was cancelled or a
     // refresh was triggered.
     private boolean mReturningToStart;
+
+    private boolean mIsBeingDragged;
 
     private OnChildScrollUpCallback mChildScrollUpCallback;
 
@@ -119,10 +122,32 @@ public class GestureRefreshLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
+
+        final int action = MotionEventCompat.getActionMasked(ev);
+
+        if (mReturningToStart && action == MotionEvent.ACTION_DOWN) {
+            // Fail fast if we're not in a state where a swipe is possible
+            mReturningToStart = false;
+        }
+
         if (!isEnabled() || canChildScrollUp() || mReturningToStart || mRefreshing) {// 不拦截（禁止掉了 || 刷新中 ）
             return false;
         }
-        return true;
+
+        switch (ev.getAction()){
+            case MotionEvent.ACTION_DOWN:
+
+                break;
+
+            case MotionEvent.ACTION_MOVE:
+                break;
+
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_CANCEL:
+                break;
+        }
+
+        return mIsBeingDragged;
     }
 
     @Override
