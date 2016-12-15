@@ -156,6 +156,7 @@ public class GestureRefreshLayout extends ViewGroup {
                     return false;
                 }
                 mInitialDownY = initialDownY;
+                mIsInterceptedMoveEvent = false;
                 break;
 
             case MotionEvent.ACTION_MOVE:
@@ -231,7 +232,8 @@ public class GestureRefreshLayout extends ViewGroup {
 
         switch (ev.getAction()){
             case MotionEvent.ACTION_DOWN:
-                mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+                if (mIsInterceptedMoveEvent)
+                    mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
                 mIsBeingDragged = false;
                 break;
             case MotionEvent.ACTION_MOVE:
@@ -242,15 +244,12 @@ public class GestureRefreshLayout extends ViewGroup {
                 }
 
                 final float y = MotionEventCompat.getY(ev, pointerIndex);
-                Log.d(TAG, "onTouchEvent: "+mInitialDownY+","+y);
 
-                // 表示是Touch到了自身，没有Touch到子View, 所以mIsBeingDragged是false，mInitialMotionY未赋值
-                if (mInitialMotionY == 0) {
+                if (!mIsInterceptedMoveEvent) {
                     determineUserWhetherBeingDragged(y);
                 }
 
                 final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
-                Log.d(TAG, "onTouchEvent: "+overscrollTop+","+mIsBeingDragged);
                 if (mIsBeingDragged) {
                     if (overscrollTop > 0) {
                         startRefresh(overscrollTop);
