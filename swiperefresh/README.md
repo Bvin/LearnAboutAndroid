@@ -1,10 +1,10 @@
 
 ## Usage
 ```xml
-<SwipeRefreshLayout>
+<GestureRefreshLayout>
     <ContentView />
     <RefreshView />
-</SwipeRefreshLayout>`
+</GestureRefreshLayout>`
 ```
 
 ## Swipe Gesture
@@ -16,14 +16,24 @@
 ---
 中文版
 ## 用法
-通常可以在SwipeRefreshLayout布局里面添加子视图来实现刷新功能，第一个应为内容视图，第二个应为刷新视图，
+通常可以在GestureRefreshLayout布局里面添加子视图来实现刷新功能，第一个应为内容视图，第二个应为刷新视图，
 不接受大于2个的子视图。
 
+原生SwipeRefreshLayout的ChildView的宽高会强制match_parent，而我们的GestureRefreshLayout可以支持Child
+View为wrap_content。
+
+至于为何SRL（即SwipeRefreshLayout，以下通称SRL）会这样做，我猜测是因为SRL把触摸事件
+从ChildView拦截到SRL自身去做事件处理，它原生是可以从ChildView的区域滑出到SRL自身的区域，Touche事件可
+以无缝衔接，虽然...但是SRL和ChildView是没有间隙的，是严丝合缝的。而GRL（即GestureRefreshLayout，以下通
+称GRL）的ContentView是可以支持wrap_content的，就算你的ChildView小到比TouchSlop还小，依然可以在
+ChildView外的GRL区域起作用。
+
+
 ```xml
-<SwipeRefreshLayout>
+<GestureRefreshLayout>
     <ContentView />
     <RefreshView />
-</SwipeRefreshLayout>`
+</GestureRefreshLayout>`
 ```
 
 ## 滑动手势
