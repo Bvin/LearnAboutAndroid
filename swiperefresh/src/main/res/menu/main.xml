@@ -6,4 +6,6 @@
           android:id="@+id/refresh"/>
     <item android:title="下一页"
           android:id="@+id/next"/>
+    <item android:title="invalidate"
+          android:id="@+id/invalidate"/>
 </menu>

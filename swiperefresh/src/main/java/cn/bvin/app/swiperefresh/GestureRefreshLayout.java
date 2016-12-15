@@ -74,6 +74,7 @@ public class GestureRefreshLayout extends ViewGroup {
     @Override
     protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+        Log.d(TAG, "onMeasure: ");
         if (mTarget == null) {
             ensureTarget();
         }
@@ -87,6 +88,7 @@ public class GestureRefreshLayout extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
+        Log.d(TAG, "onLayout: ");
         final int width = getMeasuredWidth();
         final int height = getMeasuredHeight();
         if (getChildCount() == 0) {
@@ -251,7 +253,7 @@ public class GestureRefreshLayout extends ViewGroup {
 
                 final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
                 if (mIsBeingDragged) {
-                    if (overscrollTop > 0) {
+                    if (overscrollTop > 0) {// 滑动了一定距离
                         startRefresh(overscrollTop);
                     } else {
                         return false;

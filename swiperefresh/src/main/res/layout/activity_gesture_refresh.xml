@@ -12,11 +12,13 @@
     tools:context="cn.bvin.app.swiperefresh.GestureRefreshActivity">
 
     <cn.bvin.app.swiperefresh.GestureRefreshLayout
+        android:id="@+id/grl"
         android:background="@color/colorPrimaryDark"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/button"
             android:padding="10dp"
             android:text="GestureRefreshLayout"
             android:layout_width="match_parent"
