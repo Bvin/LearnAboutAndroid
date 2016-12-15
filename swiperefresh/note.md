@@ -36,3 +36,4 @@ AppBarLayout是实现了很多material designs 设计风格应用栏（即滑动
 
 GestureRefresh
 1. 点击子View是不被拦截的，但是如果从子View开始滑动，并且超过了TouchSlop将会拦截，当作是滑动刷新了。
+2. 从InterceptTouchEvent的Down发到自己的TouchEvent，如果TouchEvent的Down返回true，事件就终止了。

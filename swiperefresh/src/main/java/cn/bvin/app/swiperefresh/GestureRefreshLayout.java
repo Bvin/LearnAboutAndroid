@@ -147,6 +147,7 @@ public class GestureRefreshLayout extends ViewGroup {
         switch (ev.getAction()){
             case MotionEvent.ACTION_DOWN:
                 mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
+                mIsBeingDragged = false;
                 final float initialDownY = getMotionEventY(ev, mActivePointerId);
                 if (initialDownY == -1) {//如果没有有效点击，就往下传递
                     return false;
@@ -254,7 +255,15 @@ public class GestureRefreshLayout extends ViewGroup {
                 break;
             case MotionEvent.ACTION_CANCEL:
             case MotionEvent.ACTION_UP:
-                break;
+                if (mActivePointerId == INVALID_POINTER) {
+                    if (action == MotionEvent.ACTION_UP) {
+                        Log.e(TAG, "Got ACTION_UP event but don't have an active pointer id.");
+                    }
+                    return false;
+                }
+                mIsBeingDragged = false;
+                mActivePointerId = INVALID_POINTER;
+                return false;
         }
 
         return true;
