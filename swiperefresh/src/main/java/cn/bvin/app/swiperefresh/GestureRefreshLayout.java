@@ -132,7 +132,7 @@ public class GestureRefreshLayout extends ViewGroup {
 
     @Override
     public boolean onInterceptTouchEvent(MotionEvent ev) {
-
+        Log.d(TAG, "onInterceptTouchEvent: "+ev.toString());
         final int action = MotionEventCompat.getActionMasked(ev);
 
         if (mReturningToStart && action == MotionEvent.ACTION_DOWN) {
