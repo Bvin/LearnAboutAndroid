@@ -42,6 +42,9 @@ public class GestureRefreshLayout extends ViewGroup {
     private boolean mIsBeingDragged;
     private int mActivePointerId = INVALID_POINTER;
 
+    // 拦截到了从子View滑过
+    private boolean mIsInterceptedMoveEvent;
+
     private OnChildScrollUpCallback mChildScrollUpCallback;
 
 
@@ -165,14 +168,8 @@ public class GestureRefreshLayout extends ViewGroup {
                 if (y == -1) {
                     return false;
                 }
-
-                final float yDiff = y - mInitialDownY;// 如果要支持反向可以用绝对值
-                if (yDiff > mTouchSlop && !mIsBeingDragged) {
-                    mInitialMotionY = mInitialDownY + mTouchSlop;
-                    mIsBeingDragged = true;// 标志开始拖动
-                    // 这里应该暴露出接口，来定制化应当状态变化
-                    //mProgress.setAlpha(STARTING_PROGRESS_ALPHA);
-                }
+                mIsInterceptedMoveEvent = true;
+                determineUserWhetherBeingDragged(y);
                 break;
 
             case MotionEventCompat.ACTION_POINTER_UP:
@@ -187,6 +184,16 @@ public class GestureRefreshLayout extends ViewGroup {
         }
 
         return mIsBeingDragged;
+    }
+
+    private void determineUserWhetherBeingDragged(float currentY) {
+        final float yDiff = currentY - mInitialDownY;// 如果要支持反向可以用绝对值
+        if (yDiff > mTouchSlop && !mIsBeingDragged) {
+            mInitialMotionY = mInitialDownY + mTouchSlop;
+            mIsBeingDragged = true;// 标志开始拖动
+            // 这里应该暴露出接口，来定制化应当状态变化
+            //mProgress.setAlpha(STARTING_PROGRESS_ALPHA);
+        }
     }
 
     private void onSecondaryPointerUp(MotionEvent ev) {
@@ -235,7 +242,15 @@ public class GestureRefreshLayout extends ViewGroup {
                 }
 
                 final float y = MotionEventCompat.getY(ev, pointerIndex);
+                Log.d(TAG, "onTouchEvent: "+mInitialDownY+","+y);
+
+                // 表示是Touch到了自身，没有Touch到子View, 所以mIsBeingDragged是false，mInitialMotionY未赋值
+                if (mInitialMotionY == 0) {
+                    determineUserWhetherBeingDragged(y);
+                }
+
                 final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
+                Log.d(TAG, "onTouchEvent: "+overscrollTop+","+mIsBeingDragged);
                 if (mIsBeingDragged) {
                     if (overscrollTop > 0) {
                         startRefresh(overscrollTop);
