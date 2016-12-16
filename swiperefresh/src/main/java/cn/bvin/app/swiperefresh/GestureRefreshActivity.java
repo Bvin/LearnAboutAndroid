@@ -5,11 +5,14 @@ import android.content.Intent;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
 public class GestureRefreshActivity extends AppCompatActivity {
+
+    private static final String TAG = "GestureRefreshActivity";
 
     public static void start(Context context) {
         Intent starter = new Intent(context, GestureRefreshActivity.class);
@@ -28,6 +31,23 @@ public class GestureRefreshActivity extends AppCompatActivity {
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         mGestureRefreshLayout = (GestureRefreshLayout) findViewById(R.id.grl);
+        mGestureRefreshLayout.setOnGestureChangeListener(new GestureRefreshLayout.OnGestureStateChangeListener() {
+            @Override
+            public void onStartDrag(float startY) {
+                Log.d(TAG, "onStartDrag: "+startY);
+            }
+
+            @Override
+            public void onDragging(float draggedDistance, float releaseDistance) {
+                if (draggedDistance < releaseDistance)
+                    mButton.offsetTopAndBottom((int) draggedDistance);
+            }
+
+            @Override
+            public void onFinishDrag(float endY) {
+                Log.d(TAG, "onFinishDrag: "+endY);
+            }
+        });
         mButton = (Button) mGestureRefreshLayout.findViewById(R.id.button);
     }
 

@@ -52,6 +52,7 @@ public class GestureRefreshLayout extends ViewGroup {
     private boolean mIsInterceptedMoveEvent;
 
     private OnChildScrollUpCallback mChildScrollUpCallback;
+    private OnGestureStateChangeListener mGestureChangeListener;
 
 
     public GestureRefreshLayout(Context context) {
@@ -66,7 +67,7 @@ public class GestureRefreshLayout extends ViewGroup {
         setEnabled(a.getBoolean(0, true));
         a.recycle();
 
-        mTotalDragDistance = 400;
+        mTotalDragDistance = 64;
     }
 
     private void ensureTarget() {
@@ -118,6 +119,10 @@ public class GestureRefreshLayout extends ViewGroup {
 
     public void setChildScrollUpCallback(OnChildScrollUpCallback childScrollUpCallback) {
         mChildScrollUpCallback = childScrollUpCallback;
+    }
+
+    public void setOnGestureChangeListener(OnGestureStateChangeListener gestureChangeListener) {
+        mGestureChangeListener = gestureChangeListener;
     }
 
     /**
@@ -262,6 +267,10 @@ public class GestureRefreshLayout extends ViewGroup {
                 final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
                 if (mIsBeingDragged) {
                     if (overscrollTop > 0) {// 滑动了一定距离
+                        if (mGestureChangeListener != null) {
+                            mGestureChangeListener.onStartDrag(y);
+                        }
+                        Log.d(TAG, "move: "+overscrollTop+","+y+","+mInitialMotionY);
                         startDrag(overscrollTop);
                     } else {
                         return false;
@@ -290,6 +299,9 @@ public class GestureRefreshLayout extends ViewGroup {
                 final float y = MotionEventCompat.getY(ev, pointerIndex);
                 final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
                 mIsBeingDragged = false;
+                if (mGestureChangeListener != null) {
+                    mGestureChangeListener.onFinishDrag(y);
+                }
                 endDrag(overscrollTop);
                 mActivePointerId = INVALID_POINTER;
                 return false;
@@ -310,6 +322,10 @@ public class GestureRefreshLayout extends ViewGroup {
             // update progress
         }else {
             // 超出定义的刷新距离
+        }
+
+        if (mGestureChangeListener != null) {
+            mGestureChangeListener.onDragging(overscrollTop,mTotalDragDistance);
         }
     }
 
@@ -338,5 +354,11 @@ public class GestureRefreshLayout extends ViewGroup {
          * @return Whether it is possible for the child view of parent layout to scroll up.
          */
         boolean canChildScrollUp(GestureRefreshLayout parent, @Nullable View child);
+    }
+
+    public interface OnGestureStateChangeListener {
+        void onStartDrag(float startY);
+        void onDragging(float draggedDistance, float releaseDistance);
+        void onFinishDrag(float endY);
     }
 }
