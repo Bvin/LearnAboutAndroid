@@ -853,6 +853,7 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
         }
         if (overscrollTop < mTotalDragDistance) {
             if (mScale) {
+                //占比值
                 setAnimationProgress(overscrollTop / mTotalDragDistance);
             }
             if (mProgress.getAlpha() > STARTING_PROGRESS_ALPHA
@@ -865,12 +866,14 @@ public class OriginSwipeRefreshLayout extends ViewGroup {
             mProgress.setArrowScale(Math.min(1f, adjustedPercent));
         } else {
             if (mProgress.getAlpha() < MAX_ALPHA && !isAnimationRunning(mAlphaMaxAnimation)) {
-                // Animate the alpha
+                // Animate the alpha //透明值
                 startProgressAlphaMaxAnimation();
             }
         }
         float rotation = (-0.25f + .4f * adjustedPercent + tensionPercent * 2) * .5f;
+        //角度值
         mProgress.setProgressRotation(rotation);
+        //垂直方向值
         setTargetOffsetTopAndBottom(targetY - mCurrentTargetOffsetTop, true /* requires update */);
     }
 

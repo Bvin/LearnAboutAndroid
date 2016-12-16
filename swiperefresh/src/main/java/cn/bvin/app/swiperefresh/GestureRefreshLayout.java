@@ -32,6 +32,12 @@ public class GestureRefreshLayout extends ViewGroup {
     private boolean mRefreshing = false;
     private int mTouchSlop;
 
+    // 释放刷新距离
+    private float mTotalDragDistance = -1;
+
+    private int mCurrentTargetOffsetTop;
+    protected int mOriginalOffsetTop;
+
     private float mInitialMotionY;
     private float mInitialDownY;
 
@@ -59,6 +65,8 @@ public class GestureRefreshLayout extends ViewGroup {
         final TypedArray a = context.obtainStyledAttributes(attrs, LAYOUT_ATTRS);
         setEnabled(a.getBoolean(0, true));
         a.recycle();
+
+        mTotalDragDistance = 400;
     }
 
     private void ensureTarget() {
@@ -238,7 +246,7 @@ public class GestureRefreshLayout extends ViewGroup {
                     mActivePointerId = MotionEventCompat.getPointerId(ev, 0);
                 mIsBeingDragged = false;
                 break;
-            case MotionEvent.ACTION_MOVE:
+            case MotionEvent.ACTION_MOVE: {
                 final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
                 if (pointerIndex < 0) {
                     Log.e(TAG, "Got ACTION_MOVE event but have an invalid active pointer id.");
@@ -254,12 +262,13 @@ public class GestureRefreshLayout extends ViewGroup {
                 final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
                 if (mIsBeingDragged) {
                     if (overscrollTop > 0) {// 滑动了一定距离
-                        startRefresh(overscrollTop);
+                        startDrag(overscrollTop);
                     } else {
                         return false;
                     }
                 }
                 break;
+            }
             case MotionEventCompat.ACTION_POINTER_DOWN: {
                 final int index = MotionEventCompat.getActionIndex(ev);
                 mActivePointerId = MotionEventCompat.getPointerId(ev, index);
@@ -270,23 +279,48 @@ public class GestureRefreshLayout extends ViewGroup {
                 onSecondaryPointerUp(ev);
                 break;
             case MotionEvent.ACTION_CANCEL:
-            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_UP: {
                 if (mActivePointerId == INVALID_POINTER) {
                     if (action == MotionEvent.ACTION_UP) {
                         Log.e(TAG, "Got ACTION_UP event but don't have an active pointer id.");
                     }
                     return false;
                 }
+                final int pointerIndex = MotionEventCompat.findPointerIndex(ev, mActivePointerId);
+                final float y = MotionEventCompat.getY(ev, pointerIndex);
+                final float overscrollTop = (y - mInitialMotionY) * DRAG_RATE;
                 mIsBeingDragged = false;
+                endDrag(overscrollTop);
                 mActivePointerId = INVALID_POINTER;
                 return false;
+            }
         }
 
         return true;
     }
 
-    private void startRefresh(float overscrollTop){
+    /**
+     *
+     * @param overscrollTop 可以理解为滑动的距离
+     */
+    private void startDrag(float overscrollTop){
+        float originalDragPercent = overscrollTop / mTotalDragDistance;
+        Log.d(TAG, "startDrag: "+overscrollTop+","+originalDragPercent);
+        if (overscrollTop < mTotalDragDistance){
+            // update progress
+        }else {
+            // 超出定义的刷新距离
+        }
+    }
 
+    private void endDrag(float overscrollTop){
+        Log.d(TAG, "endDrag: "+overscrollTop+","+mTotalDragDistance);
+        if (overscrollTop > mTotalDragDistance){
+            // start refresh
+        }else {
+            // cancel return to origin start position
+            //
+        }
     }
 
     /**

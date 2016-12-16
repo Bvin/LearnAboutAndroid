@@ -33,6 +33,7 @@ AppBarLayout是实现了很多material designs 设计风格应用栏（即滑动
 3. layout过的View才能通过getWidth/height方法获取到真实的值, getWidth/Height<<layout
 4. onInterceptTouchEvent返回false，往下传递，返回true就被拦截，点的子视图的时候。点到自己那部分还是
 就传递到onTouchEvent了。
+5. 子View调用offsetxxx方法并不会引发父View的重新layout或draw，bringToFront会导致。
 
 GestureRefresh
 
@@ -44,3 +45,7 @@ GestureRefresh
    点击它，这个按钮是可以收到的点击事件的。但是如果如果你要拦截这种往下传递的派发，也就是在onIntercept
    TouchEvent()方法中返回true，则投递给自身的onTouchEvent,子View是接受不到事件的。
    http://stackoverflow.com/questions/21288081/onintercepttouchevents-action-up-and-action-move-never-gets-called
+
+
+其他：
+1. 如果switch 的case分支里面有重名变量，可以把case的代码用{}括起来就不会冲突了。

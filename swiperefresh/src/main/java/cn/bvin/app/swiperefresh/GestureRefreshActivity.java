@@ -40,7 +40,10 @@ public class GestureRefreshActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.invalidate){
-            mButton.bringToFront();
+            // 只要是ViewGroup里的任意子View调了这句就会引发layout和draw
+            // 将会调用父类的invalidate()和requestLayout方法
+            // 只有悬浮式刷新需要调用bringToFront，其他可以直接调用requestLayout()
+            mButton.offsetTopAndBottom(15);
             return true;
         }
         return super.onOptionsItemSelected(item);
