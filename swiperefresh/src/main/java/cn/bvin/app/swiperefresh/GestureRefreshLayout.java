@@ -27,6 +27,7 @@ public class GestureRefreshLayout extends ViewGroup {
 
     private static final String TAG = "GestureRefreshLayout";
     private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
+    private static final int ANIMATE_TO_TRIGGER_DURATION = 200;
     private static final int ANIMATE_TO_START_DURATION = 200;
     private static final int[] LAYOUT_ATTRS = new int[]{android.R.attr.enabled};
     private static final int INVALID_POINTER = -1;
@@ -36,7 +37,7 @@ public class GestureRefreshLayout extends ViewGroup {
     private boolean mRefreshing = false;
     private int mTouchSlop;
 
-    // 释放刷新距离
+    // 释放刷新距离，用于边界判断
     private float mTotalDragDistance = -1;
 
     private int mCurrentTargetOffsetTop;
@@ -44,6 +45,8 @@ public class GestureRefreshLayout extends ViewGroup {
     private boolean mOriginalOffsetCalculated = false;
 
     protected int mOriginalOffsetTop;
+
+    // 定义的下拉End距离，用于调整回弹位置
     int mSpinnerOffsetEnd;
 
     private float mInitialMotionY;
@@ -68,6 +71,8 @@ public class GestureRefreshLayout extends ViewGroup {
 
     private OnChildScrollUpCallback mChildScrollUpCallback;
     private OnGestureStateChangeListener mGestureChangeListener;
+
+    private boolean mNotify;
 
     // Whether the client has set a custom starting position;
     private boolean mUsingCustomStart;
@@ -124,6 +129,19 @@ public class GestureRefreshLayout extends ViewGroup {
         mUsingCustomStart = true;
         reset();
         mRefreshing = false;
+    }
+
+    private void setRefreshing(boolean refreshing, final boolean notify) {
+        if (mRefreshing != refreshing) {
+            mNotify = notify;
+            ensureTarget();
+            mRefreshing = refreshing;
+            if (mRefreshing) {
+                animateOffsetToCorrectPosition(mCurrentTargetOffsetTop, null);
+            } else {
+                //startScaleDownAnimation(mRefreshListener);
+            }
+        }
     }
 
     private void ensureTarget() {
@@ -431,15 +449,27 @@ public class GestureRefreshLayout extends ViewGroup {
     private void endDrag(float overscrollTop){
         Log.d(TAG, "endDrag: "+overscrollTop+","+mTotalDragDistance);
         if (overscrollTop > mTotalDragDistance){
-            // start refresh
+            setRefreshing(true, true /* notify */);
         }else {
-            // cancel return to origin start position
-            //
+            // cancel refresh
+            mRefreshing = false;
+            animateOffsetToStartPosition(mCurrentTargetOffsetTop, null);// 回程
         }
         if (mGestureChangeListener != null) {
             mGestureChangeListener.onFinishDrag(mCurrentTargetOffsetTop);
         }
-        animateOffsetToStartPosition(mCurrentTargetOffsetTop, null);// 回程
+    }
+
+    private void animateOffsetToCorrectPosition(int from, Animation.AnimationListener listener) {
+        mFrom = from;
+        mAnimateToCorrectPosition.reset();
+        mAnimateToCorrectPosition.setDuration(ANIMATE_TO_TRIGGER_DURATION);
+        mAnimateToCorrectPosition.setInterpolator(mDecelerateInterpolator);
+        if (listener != null) {
+            //cast(mCircleView).setAnimationListener(listener);
+        }
+        mRefreshView.clearAnimation();
+        mRefreshView.startAnimation(mAnimateToCorrectPosition);
     }
 
     private void animateOffsetToStartPosition(int from, Animation.AnimationListener listener) {
@@ -465,6 +495,23 @@ public class GestureRefreshLayout extends ViewGroup {
         int offset = targetTop - mRefreshView.getTop();
         setTargetOffsetTopAndBottom(offset, false /* requires update */);
     }
+
+    private final Animation mAnimateToCorrectPosition = new Animation() {
+        @Override
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            int targetTop = 0;
+            int endTarget = 0;
+            if (!mUsingCustomStart) {
+                endTarget = (int) (mSpinnerOffsetEnd - Math.abs(mOriginalOffsetTop));
+            } else {
+                endTarget = (int) mSpinnerOffsetEnd;
+            }
+            targetTop = (mFrom + (int) ((endTarget - mFrom) * interpolatedTime));
+            int offset = targetTop - mRefreshView.getTop();
+            setTargetOffsetTopAndBottom(offset, false /* requires update */);
+            //mProgress.setArrowScale(1 - interpolatedTime);
+        }
+    };
 
     private final Animation mAnimateToStartPosition = new Animation() {
         @Override
