@@ -49,9 +49,9 @@ ChildView外的GRL区域起作用。
                |--------------------|
                |                    |  
                |                    |
-               |                    |   ------> TotalDragDistance/SpinnerOffsetEnd
-               |    Content View    |
-               |  ------ == ------  |   ------> CurrentOffsetTop
+               | <----------------> |   ------> TotalDragDistance/SpinnerOffsetEnd
+               |   [Content View]   |
+               | ------- == ------- |   ------> CurrentOffsetTop
                |                    |
                |                    |
                |                    |
