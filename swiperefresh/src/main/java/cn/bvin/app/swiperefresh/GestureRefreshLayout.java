@@ -12,6 +12,9 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.DecelerateInterpolator;
+import android.view.animation.Transformation;
 import android.widget.AbsListView;
 
 
@@ -23,7 +26,8 @@ import android.widget.AbsListView;
 public class GestureRefreshLayout extends ViewGroup {
 
     private static final String TAG = "GestureRefreshLayout";
-
+    private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
+    private static final int ANIMATE_TO_START_DURATION = 200;
     private static final int[] LAYOUT_ATTRS = new int[]{android.R.attr.enabled};
     private static final int INVALID_POINTER = -1;
     private static final float DRAG_RATE = .5f;
@@ -37,13 +41,21 @@ public class GestureRefreshLayout extends ViewGroup {
 
     private int mCurrentTargetOffsetTop;
     protected int mOriginalOffsetTop;
+    int mSpinnerOffsetEnd;
 
     private float mInitialMotionY;
     private float mInitialDownY;
 
+    // Whether this item is scaled up rather than clipped
+    private boolean mScale;
+
     // Target is returning to its start offset because it was cancelled or a
     // refresh was triggered.
     private boolean mReturningToStart;
+    private final DecelerateInterpolator mDecelerateInterpolator;
+
+    private View mRefreshView;
+    protected int mFrom;
 
     private boolean mIsBeingDragged;
     private int mActivePointerId = INVALID_POINTER;
@@ -54,6 +66,8 @@ public class GestureRefreshLayout extends ViewGroup {
     private OnChildScrollUpCallback mChildScrollUpCallback;
     private OnGestureStateChangeListener mGestureChangeListener;
 
+    // Whether the client has set a custom starting position;
+    private boolean mUsingCustomStart;
 
     public GestureRefreshLayout(Context context) {
         this(context, null);
@@ -63,11 +77,50 @@ public class GestureRefreshLayout extends ViewGroup {
         super(context, attrs);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
 
+        mDecelerateInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
+
         final TypedArray a = context.obtainStyledAttributes(attrs, LAYOUT_ATTRS);
         setEnabled(a.getBoolean(0, true));
         a.recycle();
 
-        mTotalDragDistance = 64;
+        // the absolute offset has to take into account that the circle starts at an offset
+        mTotalDragDistance = mSpinnerOffsetEnd = 64;
+
+        mOriginalOffsetTop = mCurrentTargetOffsetTop =  -40;// refresh height
+
+    }
+
+    void reset() {
+        mRefreshView.clearAnimation();
+        mRefreshView.setVisibility(View.GONE);
+        mCurrentTargetOffsetTop = mRefreshView.getTop();
+    }
+
+    /**
+     * The refresh indicator starting and resting position is always positioned
+     * near the top of the refreshing content. This position is a consistent
+     * location, but can be adjusted in either direction based on whether or not
+     * there is a toolbar or actionbar present.
+     * <p>
+     * <strong>Note:</strong> Calling this will reset the position of the refresh indicator to
+     * <code>start</code>.
+     * </p>
+     *
+     * @param scale Set to true if there is no view at a higher z-order than where the progress
+     *              spinner is set to appear. Setting it to true will cause indicator to be scaled
+     *              up rather than clipped.
+     * @param start The offset in pixels from the top of this view at which the
+     *              progress spinner should appear.
+     * @param end The offset in pixels from the top of this view at which the
+     *            progress spinner should come to rest after a successful swipe
+     *            gesture.
+     */
+    public void setRefreshViewOffset(boolean scale, int start, int end) {
+        mOriginalOffsetTop = start;
+        mSpinnerOffsetEnd = end;
+        mUsingCustomStart = true;
+        reset();
+        mRefreshing = false;
     }
 
     private void ensureTarget() {
@@ -76,6 +129,7 @@ public class GestureRefreshLayout extends ViewGroup {
                 throw new IllegalStateException("GestureRefreshLayout can host only 2 direct child");
             } else {
                 mTarget = getChildAt(0);
+                mRefreshView = getChildAt(1);
             }
         }
     }
@@ -93,6 +147,7 @@ public class GestureRefreshLayout extends ViewGroup {
         /*mTarget.measure(MeasureSpec.makeMeasureSpec(getMeasuredWidth() - getPaddingLeft() - getPaddingRight(), MeasureSpec.EXACTLY),
                 MeasureSpec.makeMeasureSpec(getMeasuredHeight() - getPaddingTop() - getPaddingBottom(), MeasureSpec.EXACTLY));*/
         measureChild(mTarget, widthMeasureSpec, heightMeasureSpec);
+        measureChild(mRefreshView, widthMeasureSpec, heightMeasureSpec);
     }
 
     @Override
@@ -115,6 +170,9 @@ public class GestureRefreshLayout extends ViewGroup {
         final int childWidth = width - getPaddingLeft() - getPaddingRight();
         final int childHeight = height - getPaddingTop() - getPaddingBottom();
         child.layout(childLeft, childTop, childLeft + mTarget.getMeasuredWidth(), childTop + mTarget.getMeasuredHeight());
+
+        mRefreshView.layout(childLeft, mCurrentTargetOffsetTop,
+                childLeft + mRefreshView.getMeasuredWidth(), mCurrentTargetOffsetTop + mRefreshView.getMeasuredHeight());
     }
 
     public void setChildScrollUpCallback(OnChildScrollUpCallback childScrollUpCallback) {
@@ -317,15 +375,44 @@ public class GestureRefreshLayout extends ViewGroup {
      */
     private void startDrag(float overscrollTop){
         float originalDragPercent = overscrollTop / mTotalDragDistance;
-        Log.d(TAG, "startDrag: "+overscrollTop+","+originalDragPercent);
+
+        float dragPercent = Math.min(1f, Math.abs(originalDragPercent));
+        float adjustedPercent = (float) Math.max(dragPercent - .4, 0) * 5 / 3;
+        float extraOS = Math.abs(overscrollTop) - mTotalDragDistance;
+        float slingshotDist = mUsingCustomStart ? mSpinnerOffsetEnd - mOriginalOffsetTop
+                : mSpinnerOffsetEnd;
+        float tensionSlingshotPercent = Math.max(0, Math.min(extraOS, slingshotDist * 2)
+                / slingshotDist);
+        float tensionPercent = (float) ((tensionSlingshotPercent / 4) - Math.pow(
+                (tensionSlingshotPercent / 4), 2)) * 2f;
+        float extraMove = (slingshotDist) * tensionPercent * 2;
+
+        int targetY = mOriginalOffsetTop + (int) ((slingshotDist * dragPercent) + extraMove);
+        if (mRefreshView != null) {
+            // where 1.0f is a full circle
+            if (mRefreshView.getVisibility() != View.VISIBLE) {
+                mRefreshView.setVisibility(View.VISIBLE);
+            }
+            if (!mScale) {
+                ViewCompat.setScaleX(mRefreshView, 1f);
+                ViewCompat.setScaleY(mRefreshView, 1f);
+            }
+            if (mScale) {
+                //setAnimationProgress(Math.min(1f, overscrollTop / mTotalDragDistance));
+            }
+        }
         if (overscrollTop < mTotalDragDistance){
             // update progress
         }else {
             // 超出定义的刷新距离
         }
 
+        float rotation = (-0.25f + .4f * adjustedPercent + tensionPercent * 2) * .5f;
+        int offset = targetY - mCurrentTargetOffsetTop;
+        setTargetOffsetTopAndBottom(offset, true /* requires update */);
+
         if (mGestureChangeListener != null) {
-            mGestureChangeListener.onDragging(overscrollTop,mTotalDragDistance);
+            //mGestureChangeListener.onDragging(offset, mTotalDragDistance);
         }
     }
 
@@ -336,6 +423,53 @@ public class GestureRefreshLayout extends ViewGroup {
         }else {
             // cancel return to origin start position
             //
+        }
+        if (mGestureChangeListener != null) {
+            mGestureChangeListener.onFinishDrag(mCurrentTargetOffsetTop);
+        }
+        animateOffsetToStartPosition(mCurrentTargetOffsetTop, null);// 回程
+    }
+
+    private void animateOffsetToStartPosition(int from, Animation.AnimationListener listener) {
+        if (mScale) {
+            // Scale the item back down
+            //startScaleDownReturnToStartAnimation(from, listener);
+        } else {
+            mFrom = from;
+            mAnimateToStartPosition.reset();
+            mAnimateToStartPosition.setDuration(ANIMATE_TO_START_DURATION);
+            mAnimateToStartPosition.setInterpolator(mDecelerateInterpolator);
+            if (listener != null) {
+                //cast(mCircleView).setAnimationListener(listener);
+            }
+            mRefreshView.clearAnimation();
+            mRefreshView.startAnimation(mAnimateToStartPosition);
+        }
+    }
+
+    private void moveToStart(float interpolatedTime) {
+        int targetTop = 0;
+        targetTop = (mFrom + (int) ((mOriginalOffsetTop - mFrom) * interpolatedTime));
+        int offset = targetTop - mRefreshView.getTop();
+        setTargetOffsetTopAndBottom(offset, false /* requires update */);
+    }
+
+    private final Animation mAnimateToStartPosition = new Animation() {
+        @Override
+        public void applyTransformation(float interpolatedTime, Transformation t) {
+            moveToStart(interpolatedTime);
+        }
+    };
+
+    private void setTargetOffsetTopAndBottom(int offset, boolean requiresUpdate) {
+        if (mRefreshView == null) {
+            ensureTarget();
+        }
+        mRefreshView.bringToFront();
+        ViewCompat.offsetTopAndBottom(mRefreshView, offset);
+        mCurrentTargetOffsetTop = mRefreshView.getTop();
+        if (requiresUpdate && android.os.Build.VERSION.SDK_INT < 11) {
+            invalidate();
         }
     }
 
