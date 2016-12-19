@@ -175,7 +175,9 @@ public class GestureRefreshLayout extends ViewGroup {
         }
         final View child = mTarget;
         final int childLeft = getPaddingLeft();
-        final int childTop = getPaddingTop();
+        // mRefreshView.getMeasuredHeight() + mCurrentTargetOffsetTop 经过onMeasure这两个值会相互抵消
+        // 没有抵消，则会出现偏差，经测试，如果没有抵消掉，第一次下拉的时候会跳顿一下，跳顿记录就是mCurrentTargetOffsetTop的原始值
+        final int childTop = getPaddingTop() + mRefreshView.getMeasuredHeight() + mCurrentTargetOffsetTop;
         final int childWidth = width - getPaddingLeft() - getPaddingRight();
         final int childHeight = height - getPaddingTop() - getPaddingBottom();
         child.layout(childLeft, childTop, childLeft + mTarget.getMeasuredWidth(), childTop + mTarget.getMeasuredHeight());
