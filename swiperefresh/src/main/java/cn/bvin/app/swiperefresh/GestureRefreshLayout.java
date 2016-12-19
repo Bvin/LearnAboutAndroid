@@ -40,6 +40,9 @@ public class GestureRefreshLayout extends ViewGroup {
     private float mTotalDragDistance = -1;
 
     private int mCurrentTargetOffsetTop;
+    // Whether or not the starting offset has been determined.
+    private boolean mOriginalOffsetCalculated = false;
+
     protected int mOriginalOffsetTop;
     int mSpinnerOffsetEnd;
 
@@ -148,6 +151,10 @@ public class GestureRefreshLayout extends ViewGroup {
                 MeasureSpec.makeMeasureSpec(getMeasuredHeight() - getPaddingTop() - getPaddingBottom(), MeasureSpec.EXACTLY));*/
         measureChild(mTarget, widthMeasureSpec, heightMeasureSpec);
         measureChild(mRefreshView, widthMeasureSpec, heightMeasureSpec);
+        if (!mUsingCustomStart && !mOriginalOffsetCalculated) {
+            mOriginalOffsetCalculated = true;
+            mCurrentTargetOffsetTop = mOriginalOffsetTop = -mRefreshView.getMeasuredHeight();
+        }
     }
 
     @Override
@@ -409,6 +416,7 @@ public class GestureRefreshLayout extends ViewGroup {
 
         float rotation = (-0.25f + .4f * adjustedPercent + tensionPercent * 2) * .5f;
         int offset = targetY - mCurrentTargetOffsetTop;
+        Log.d(TAG, "startDrag: "+mCurrentTargetOffsetTop+","+offset);
         setTargetOffsetTopAndBottom(offset, true /* requires update */);
 
         if (mGestureChangeListener != null) {

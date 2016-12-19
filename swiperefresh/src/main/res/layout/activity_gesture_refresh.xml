@@ -27,7 +27,7 @@
             android:padding="10dp"
             android:text="GestureRefreshLayout"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"/>
+            android:layout_height="wrap_content"/>
 
     </cn.bvin.app.swiperefresh.GestureRefreshLayout>
 
