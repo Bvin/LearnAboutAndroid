@@ -44,14 +44,17 @@ ChildView外的GRL区域起作用。
 
 ## 实现原理
                
-               +--------------------+   -----> OriginOffsetTop
+               +--------------------+   ------> OriginOffsetTop
                |    Refresh View    |
                |--------------------|
                |                    |  
                |                    |
                |                    |   ------> TotalDragDistance/SpinnerOffsetEnd
                |    Content View    |
-               |  ------===-------  |   ------> CurrentOffsetTop
+               |  ------ == ------  |   ------> CurrentOffsetTop
+               |                    |
+               |                    |
+               |                    |
                |                    |
                |                    |
                |                    |
