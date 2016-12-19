@@ -4,7 +4,7 @@
 <GestureRefreshLayout>
     <ContentView />
     <RefreshView />
-</GestureRefreshLayout>`
+</GestureRefreshLayout>
 ```
 
 ## Swipe Gesture
@@ -33,7 +33,7 @@ ChildView外的GRL区域起作用。
 <GestureRefreshLayout>
     <ContentView />
     <RefreshView />
-</GestureRefreshLayout>`
+</GestureRefreshLayout>
 ```
 
 ## 滑动手势
@@ -41,3 +41,27 @@ ChildView外的GRL区域起作用。
 2. 悬浮位移，即内容视图固定，刷新视图跟着手势纵向位移，适合沉浸式刷新。
 3. 内容下潜位移，刷新视图固定，内容视图跟着手势纵向位移，这种情况一般是刷新视图会有吸引人的动画。
 4. 不位移，内容和刷新视图都不随手势位移，虽然纵向固定，但是可以通过其他形式来表现刷新行为。
+
+## 实现原理
+               
+               +--------------------+   -----> OriginOffsetTop
+               |    Refresh View    |
+               |--------------------|
+               |                    |  
+               |                    |
+               |                    |   ------> TotalDragDistance/SpinnerOffsetEnd
+               |    Content View    |
+               |  ------===-------  |   ------> CurrentOffsetTop
+               |                    |
+               |                    |
+               |                    |
+               |                    |
+               |                    |
+               +--------------------+
+               
+ 1. 用户可以定义下拉的OffsetStart,OffsetEnd，其中OffsetStart是RefreshView初始位置，刷新完成或者取消下
+ 拉刷新都会回到这个位置，便于隐藏；其中OffsetEnd是下拉的相对距离(CurrentOffsetTop)超过了释放刷新的距
+ 离，需要回到一个位置等待执行事务，通常事务完成后需要回到初始位置。
+ 2. TotalDragDistance是触发刷新的滑动距离边界值，超过这个值就开始刷新，否则当作取消。可以通过当前滑
+ 动的距离与这个值的比例设定一个progress，这个是非常有用的，比如说你要旋转角度、改变透明度或者给定一个
+ ProgressBar的进度值。
