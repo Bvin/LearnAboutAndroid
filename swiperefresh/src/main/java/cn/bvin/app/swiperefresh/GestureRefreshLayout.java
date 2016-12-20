@@ -65,6 +65,7 @@ public class GestureRefreshLayout extends ViewGroup {
     private final DecelerateInterpolator mDecelerateInterpolator;
 
     private View mRefreshView;
+    private int mRefreshViewIndex = -1;
     protected int mFrom;
 
     private float mStartingScale;
@@ -137,6 +138,22 @@ public class GestureRefreshLayout extends ViewGroup {
 
         mOriginalOffsetTop = mCurrentTargetOffsetTop =  -40;// refresh height
 
+    }
+
+    @Override
+    protected int getChildDrawingOrder(int childCount, int i) {
+        if (mRefreshViewIndex < 0) {
+            return i;
+        } else if (i == childCount - 1) {
+            // Draw the selected child last
+            return mRefreshViewIndex;
+        } else if (i >= mRefreshViewIndex) {
+            // Move the children after the selected child earlier one
+            return i + 1;
+        } else {
+            // Keep the children before the selected child the same
+            return i;
+        }
     }
 
     void reset() {
@@ -335,6 +352,14 @@ public class GestureRefreshLayout extends ViewGroup {
             // 比RefreshView多出64px
             mTotalDragDistance = mSpinnerOffsetEnd = (int) (-mOriginalOffsetTop + mTotalDragDistance);
         }
+        mRefreshViewIndex = -1;
+        // Get the index of the circleview.
+        for (int index = 0; index < getChildCount(); index++) {
+            if (getChildAt(index) == mRefreshView) {
+                mRefreshViewIndex = index;
+                break;
+            }
+        }
     }
 
     @Override
@@ -448,6 +473,19 @@ public class GestureRefreshLayout extends ViewGroup {
         }
 
         return mIsBeingDragged;
+    }
+
+    @Override
+    public void requestDisallowInterceptTouchEvent(boolean disallowIntercept) {
+        // if this is a List < L or another view that doesn't support nested
+        // scrolling, ignore this request so that the vertical scroll event
+        // isn't stolen
+        if ((android.os.Build.VERSION.SDK_INT < 21 && mTarget instanceof AbsListView)
+                || (mTarget != null && !ViewCompat.isNestedScrollingEnabled(mTarget))) {
+            // Nope.
+        } else {
+            super.requestDisallowInterceptTouchEvent(disallowIntercept);
+        }
     }
 
     private void determineUserWhetherBeingDragged(float currentY) {
