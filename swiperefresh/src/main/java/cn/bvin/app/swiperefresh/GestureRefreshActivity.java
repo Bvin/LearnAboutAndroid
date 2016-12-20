@@ -39,8 +39,7 @@ public class GestureRefreshActivity extends AppCompatActivity {
 
             @Override
             public void onDragging(float draggedDistance, float releaseDistance) {
-                if (draggedDistance < releaseDistance)
-                    mButton.offsetTopAndBottom((int) draggedDistance);
+
             }
 
             @Override
@@ -48,7 +47,32 @@ public class GestureRefreshActivity extends AppCompatActivity {
                 Log.d(TAG, "onFinishDrag: "+endY);
             }
         });
+        mGestureRefreshLayout.setOnRefreshListener(new GestureRefreshLayout.OnRefreshListener() {
+            @Override
+            public void onRefresh() {
+                execute();
+            }
+        });
         mButton = (Button) mGestureRefreshLayout.findViewById(R.id.button);
+    }
+
+    private void execute(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                try {
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        mGestureRefreshLayout.setRefreshing(false);
+                    }
+                });
+            }
+        }).start();
     }
 
     @Override

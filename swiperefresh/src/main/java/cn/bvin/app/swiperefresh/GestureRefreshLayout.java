@@ -26,7 +26,9 @@ import android.widget.AbsListView;
 public class GestureRefreshLayout extends ViewGroup {
 
     private static final String TAG = "GestureRefreshLayout";
+    private static final int MAX_ALPHA = 255;
     private static final float DECELERATE_INTERPOLATION_FACTOR = 2f;
+    private static final int SCALE_DOWN_DURATION = 150;
     private static final int ANIMATE_TO_TRIGGER_DURATION = 200;
     private static final int ANIMATE_TO_START_DURATION = 200;
     private static final int[] LAYOUT_ATTRS = new int[]{android.R.attr.enabled};
@@ -34,12 +36,14 @@ public class GestureRefreshLayout extends ViewGroup {
     private static final float DRAG_RATE = .5f;
 
     private View mTarget;
+    private OnRefreshListener mListener;
     private boolean mRefreshing = false;
     private int mTouchSlop;
 
     // 释放刷新距离，用于边界判断
     private float mTotalDragDistance = -1;
 
+    private int mMediumAnimationDuration;
     private int mCurrentTargetOffsetTop;
     // Whether or not the starting offset has been determined.
     private boolean mOriginalOffsetCalculated = false;
@@ -63,6 +67,9 @@ public class GestureRefreshLayout extends ViewGroup {
     private View mRefreshView;
     protected int mFrom;
 
+    private Animation mScaleAnimation;
+    private Animation mScaleDownAnimation;
+
     private boolean mIsBeingDragged;
     private int mActivePointerId = INVALID_POINTER;
 
@@ -77,6 +84,40 @@ public class GestureRefreshLayout extends ViewGroup {
     // Whether the client has set a custom starting position;
     private boolean mUsingCustomStart;
 
+    private Animation.AnimationListener mRefreshListener = new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+            if (mRefreshing) {
+                // Make sure the progress view is fully visible
+                // 开始刷新动画
+                if (mNotify) {
+                    if (mListener != null) {
+                        mListener.onRefresh();
+                    }
+                }
+            } else {
+                mRefreshView.setVisibility(View.GONE);
+                setColorViewAlpha(MAX_ALPHA);
+                // Return the circle to its start position
+                if (mScale) {
+                    setAnimationProgress(0 /* animation complete and view is hidden */);
+                } else {
+                    setTargetOffsetTopAndBottom(mOriginalOffsetTop - mCurrentTargetOffsetTop,
+                            true /* requires update */);
+                }
+            }
+            mCurrentTargetOffsetTop = mRefreshView.getTop();
+        }
+    };
+
     public GestureRefreshLayout(Context context) {
         this(context, null);
     }
@@ -84,6 +125,8 @@ public class GestureRefreshLayout extends ViewGroup {
     public GestureRefreshLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
+        mMediumAnimationDuration = getResources().getInteger(
+                android.R.integer.config_mediumAnimTime);
 
         mDecelerateInterpolator = new DecelerateInterpolator(DECELERATE_INTERPOLATION_FACTOR);
 
@@ -131,17 +174,114 @@ public class GestureRefreshLayout extends ViewGroup {
         mRefreshing = false;
     }
 
+    /**
+     * Set the listener to be notified when a refresh is triggered via the swipe
+     * gesture.
+     */
+    public void setOnRefreshListener(OnRefreshListener listener) {
+        mListener = listener;
+    }
+
+    /**
+     * Pre API 11, alpha is used to make the progress circle appear instead of scale.
+     */
+    private boolean isAlphaUsedForScale() {
+        return android.os.Build.VERSION.SDK_INT < 11;
+    }
+
+    /**
+     * Notify the widget that refresh state has changed. Do not call this when
+     * refresh is triggered by a swipe gesture.
+     *
+     * @param refreshing Whether or not the view should show refresh progress.
+     */
+    public void setRefreshing(boolean refreshing) {
+        if (refreshing && mRefreshing != refreshing) {
+            // scale and show
+            mRefreshing = refreshing;
+            int endTarget = 0;
+            if (!mUsingCustomStart) {
+                endTarget = (int) (mSpinnerOffsetEnd + mOriginalOffsetTop);
+            } else {
+                endTarget = (int) mSpinnerOffsetEnd;
+            }
+            setTargetOffsetTopAndBottom(endTarget - mCurrentTargetOffsetTop,
+                    true /* requires update */);
+            mNotify = false;
+            startScaleUpAnimation(mRefreshListener);
+        } else {
+            setRefreshing(refreshing, false /* notify */);
+        }
+    }
+
+    private void startScaleUpAnimation(Animation.AnimationListener listener) {
+        mRefreshView.setVisibility(View.VISIBLE);
+        if (android.os.Build.VERSION.SDK_INT >= 11) {
+            // Pre API 11, alpha is used in place of scale up to show the
+            // progress circle appearing.
+            // Don't adjust the alpha during appearance otherwise.
+            //mProgress.setAlpha(MAX_ALPHA);
+        }
+        mScaleAnimation = new Animation() {
+            @Override
+            public void applyTransformation(float interpolatedTime, Transformation t) {
+                setAnimationProgress(interpolatedTime);
+            }
+        };
+        mScaleAnimation.setDuration(mMediumAnimationDuration);
+        if (listener != null) {
+            //cast(mRefreshView).setAnimationListener(listener);
+        }
+        mRefreshView.clearAnimation();
+        mRefreshView.startAnimation(mScaleAnimation);
+    }
+
+    /**
+     * 更改RefreshView的透明度.
+     * @param targetAlpha
+     */
+    private void setColorViewAlpha(int targetAlpha) {
+        mRefreshView.getBackground().setAlpha(targetAlpha);
+    }
+
+    /**
+     * Pre API 11, this does an alpha animation.
+     * @param progress
+     */
+    private void setAnimationProgress(float progress) {
+        if (isAlphaUsedForScale()) {
+            setColorViewAlpha((int) (progress * MAX_ALPHA));
+        } else {
+            ViewCompat.setScaleX(mRefreshView, progress);
+            ViewCompat.setScaleY(mRefreshView, progress);
+        }
+    }
+
     private void setRefreshing(boolean refreshing, final boolean notify) {
         if (mRefreshing != refreshing) {
             mNotify = notify;
             ensureTarget();
             mRefreshing = refreshing;
             if (mRefreshing) {
-                animateOffsetToCorrectPosition(mCurrentTargetOffsetTop, null);
+                animateOffsetToCorrectPosition(mCurrentTargetOffsetTop, mRefreshListener);
             } else {
-                //startScaleDownAnimation(mRefreshListener);
+                startScaleDownAnimation(mRefreshListener);
             }
         }
+    }
+
+    private void startScaleDownAnimation(Animation.AnimationListener listener) {
+        mScaleDownAnimation = new Animation() {
+            @Override
+            public void applyTransformation(float interpolatedTime, Transformation t) {
+                setAnimationProgress(1 - interpolatedTime);
+            }
+        };
+        mScaleDownAnimation.setDuration(SCALE_DOWN_DURATION);
+        mScaleDownAnimation.setAnimationListener(listener);
+        //cast(mRefreshView).setAnimationListener(listener);
+        mRefreshView.clearAnimation();
+        mRefreshView.startAnimation(mScaleDownAnimation);
     }
 
     private void ensureTarget() {
@@ -453,7 +593,7 @@ public class GestureRefreshLayout extends ViewGroup {
         }else {
             // cancel refresh
             mRefreshing = false;
-            animateOffsetToStartPosition(mCurrentTargetOffsetTop, null);// 回程
+            animateOffsetToStartPosition(mCurrentTargetOffsetTop, mRefreshListener);// 回程
         }
         if (mGestureChangeListener != null) {
             mGestureChangeListener.onFinishDrag(mCurrentTargetOffsetTop);
@@ -465,6 +605,7 @@ public class GestureRefreshLayout extends ViewGroup {
         mAnimateToCorrectPosition.reset();
         mAnimateToCorrectPosition.setDuration(ANIMATE_TO_TRIGGER_DURATION);
         mAnimateToCorrectPosition.setInterpolator(mDecelerateInterpolator);
+        mAnimateToCorrectPosition.setAnimationListener(listener);
         if (listener != null) {
             //cast(mCircleView).setAnimationListener(listener);
         }
@@ -553,5 +694,13 @@ public class GestureRefreshLayout extends ViewGroup {
         void onStartDrag(float startY);
         void onDragging(float draggedDistance, float releaseDistance);
         void onFinishDrag(float endY);
+    }
+
+    /**
+     * Classes that wish to be notified when the swipe gesture correctly
+     * triggers a refresh should implement this interface.
+     */
+    public interface OnRefreshListener {
+        public void onRefresh();
     }
 }
