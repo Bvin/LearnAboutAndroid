@@ -89,6 +89,9 @@ public class GestureRefreshActivity extends AppCompatActivity {
             // 只有悬浮式刷新需要调用bringToFront，其他可以直接调用requestLayout()
             mButton.offsetTopAndBottom(15);
             return true;
+        }else if (item.getItemId() == R.id.refresh){
+            mGestureRefreshLayout.setRefreshing(true);
+            return true;
         }
         return super.onOptionsItemSelected(item);
     }

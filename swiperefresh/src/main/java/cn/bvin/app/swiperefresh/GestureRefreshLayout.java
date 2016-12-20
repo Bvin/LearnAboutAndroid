@@ -229,9 +229,7 @@ public class GestureRefreshLayout extends ViewGroup {
             }
         };
         mScaleAnimation.setDuration(mMediumAnimationDuration);
-        if (listener != null) {
-            //cast(mRefreshView).setAnimationListener(listener);
-        }
+        mScaleAnimation.setAnimationListener(listener);
         mRefreshView.clearAnimation();
         mRefreshView.startAnimation(mScaleAnimation);
     }
@@ -279,7 +277,6 @@ public class GestureRefreshLayout extends ViewGroup {
         };
         mScaleDownAnimation.setDuration(SCALE_DOWN_DURATION);
         mScaleDownAnimation.setAnimationListener(listener);
-        //cast(mRefreshView).setAnimationListener(listener);
         mRefreshView.clearAnimation();
         mRefreshView.startAnimation(mScaleDownAnimation);
     }
