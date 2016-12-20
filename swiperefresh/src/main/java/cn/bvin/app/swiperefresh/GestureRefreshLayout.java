@@ -67,8 +67,11 @@ public class GestureRefreshLayout extends ViewGroup {
     private View mRefreshView;
     protected int mFrom;
 
+    private float mStartingScale;
+
     private Animation mScaleAnimation;
     private Animation mScaleDownAnimation;
+    private Animation mScaleDownToStartAnimation;
 
     private boolean mIsBeingDragged;
     private int mActivePointerId = INVALID_POINTER;
@@ -109,7 +112,7 @@ public class GestureRefreshLayout extends ViewGroup {
                 // Return the circle to its start position
                 if (mScale) {
                     setAnimationProgress(0 /* animation complete and view is hidden */);
-                } else {
+                }  {
                     setTargetOffsetTopAndBottom(mOriginalOffsetTop - mCurrentTargetOffsetTop,
                             true /* requires update */);
                 }
@@ -628,9 +631,6 @@ public class GestureRefreshLayout extends ViewGroup {
         mAnimateToCorrectPosition.setDuration(ANIMATE_TO_TRIGGER_DURATION);
         mAnimateToCorrectPosition.setInterpolator(mDecelerateInterpolator);
         mAnimateToCorrectPosition.setAnimationListener(listener);
-        if (listener != null) {
-            //cast(mCircleView).setAnimationListener(listener);
-        }
         mRefreshView.clearAnimation();
         mRefreshView.startAnimation(mAnimateToCorrectPosition);
     }
@@ -638,15 +638,13 @@ public class GestureRefreshLayout extends ViewGroup {
     private void animateOffsetToStartPosition(int from, Animation.AnimationListener listener) {
         if (mScale) {
             // Scale the item back down
-            //startScaleDownReturnToStartAnimation(from, listener);
+            startScaleDownReturnToStartAnimation(from, listener);
         } else {
             mFrom = from;
             mAnimateToStartPosition.reset();
             mAnimateToStartPosition.setDuration(ANIMATE_TO_START_DURATION);
             mAnimateToStartPosition.setInterpolator(mDecelerateInterpolator);
-            if (listener != null) {
-                //cast(mCircleView).setAnimationListener(listener);
-            }
+            mAnimateToStartPosition.setAnimationListener(listener);
             mRefreshView.clearAnimation();
             mRefreshView.startAnimation(mAnimateToStartPosition);
         }
@@ -682,6 +680,30 @@ public class GestureRefreshLayout extends ViewGroup {
             moveToStart(interpolatedTime);
         }
     };
+
+    private void startScaleDownReturnToStartAnimation(int from,
+                                                      Animation.AnimationListener listener) {
+        mFrom = from;
+        if (isAlphaUsedForScale()) {
+            mStartingScale = mRefreshView.getAlpha();
+        } else {
+            mStartingScale = ViewCompat.getScaleX(mRefreshView);
+        }
+        mScaleDownToStartAnimation = new Animation() {
+            @Override
+            public void applyTransformation(float interpolatedTime, Transformation t) {
+                float targetScale = (mStartingScale + (-mStartingScale  * interpolatedTime));
+                setAnimationProgress(targetScale);
+                moveToStart(interpolatedTime);
+            }
+        };
+        mScaleDownToStartAnimation.setDuration(SCALE_DOWN_DURATION);
+        if (listener != null) {
+            mScaleDownToStartAnimation.setAnimationListener(listener);
+        }
+        mRefreshView.clearAnimation();
+        mRefreshView.startAnimation(mScaleDownToStartAnimation);
+    }
 
     private void setTargetOffsetTopAndBottom(int offset, boolean requiresUpdate) {
         if (mRefreshView == null) {
