@@ -211,6 +211,10 @@ public class GestureRefreshLayout extends ViewGroup {
         mRefreshing = false;
     }
 
+    public void setTranslateContent(boolean translateContent) {
+        mTranslateContent = translateContent;
+    }
+
     /**
      * Set the listener to be notified when a refresh is triggered via the swipe
      * gesture.

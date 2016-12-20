@@ -31,6 +31,7 @@ public class GestureRefreshActivity extends AppCompatActivity implements Gesture
             actionBar.setDisplayHomeAsUpEnabled(true);
         }
         mGestureRefreshLayout = (GestureRefreshLayout) findViewById(R.id.grl);
+        mGestureRefreshLayout.setTranslateContent(true);
         mGestureRefreshLayout.setOnGestureChangeListener(new GestureRefreshLayout.OnGestureStateChangeListener() {
             @Override
             public void onStartDrag(float startY) {

@@ -17,10 +17,38 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:text="吼吼吼"
+        <ScrollView
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="match_parent">
+
+            <TextView
+                android:text="从上面布局看到，CoordinatorLayout协调布局中包裹了两个布局，一个是NestedScrollView，一个是AppBarLayout，以及FAB按钮。
+
+我们来看看CoordinatorLayout是怎么来协调这两个子视图手势操作的。
+
+1.由于CoordinatorLayout是FrameLayout布局，我们可以通过
+
+android:layout_gravity=bottom|end
+属性来控制组件在整个布局中的位置，比如上面效果中的FAB就是通过android:layout_gravity=”bottom|end”来确定 FAB的位置在底端的最右边的位置。
+
+2.为了达到上面效果图的手势动画效果，我们必须做如下设置，通过app:layout_scrollFlags=”scroll|enterAlways” 属性来确定哪个组件是可滑动的
+
+设置的layout_scrollFlags有如下几种选项：
+
+scroll: 所有想滚动出屏幕的view都需要设置这个flag- 没有设置这个flag的view将被固定在屏幕顶部。 enterAlways: 这个flag让任意向下的滚动都会导致该view变为可见，启用快速“返回模式”。 enterAlwaysCollapsed: 当你的视图已经设置minHeight属性又使用此标志时，你的视图只能已最小高度进入，只有当滚动视图到达顶部时才扩大到完整高度。 exitUntilCollapsed: 滚动退出屏幕，最后折叠在顶端。
+我们上面的布局中 给Toolbar设置了app:layout_scrollFlags属性，因此，Toolbar是可以滚动出屏幕，且向下滚动有可以出现。
+
+3.为了使得Toolbar可以滑动，我们必须还得有个条件，就是CoordinatorLayout布局下包裹一个可以滑动的布局，比如 RecyclerView，NestedScrollView(经过测试，ListView，ScrollView不支持)具有滑动效果的组件。并且给这些组件设置如下属性来告诉CoordinatorLayout，该组件是带有滑动行为的组件，然后CoordinatorLayout在接受到滑动时会通知AppBarLayout 中可滑动的Toolbar可以滑出屏幕了。
+
+app:layout_behavior=@string/appbar_scrolling_view_behavior
+总结： 为了使得Toolbar有滑动效果，必须做到如下三点：
+
+CoordinatorLayout必须作为整个布局的父布局容器。 给需要滑动的组件设置 app:layout_scrollFlags=”scroll|enterAlways” 属性。 给你的可滑动的组件，也就是RecyclerView 或者 NestedScrollView 设置如下属性：
+ app:layout_behavior=@string/appbar_scrolling_view_behavior"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"/>
+
+        </ScrollView>
 
         <Button
             android:id="@+id/button"
