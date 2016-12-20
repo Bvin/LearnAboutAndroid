@@ -201,10 +201,13 @@ public class GestureRefreshLayout extends ViewGroup {
             mRefreshing = refreshing;
             int endTarget = 0;
             if (!mUsingCustomStart) {
-                endTarget = (int) (mSpinnerOffsetEnd + mOriginalOffsetTop);
+                endTarget = (mSpinnerOffsetEnd + mOriginalOffsetTop);
             } else {
-                endTarget = (int) mSpinnerOffsetEnd;
+                endTarget =  mSpinnerOffsetEnd;
             }
+            // offset = mSpinnerOffsetEnd + mOriginalOffsetTop - mCurrentTargetOffsetTop
+            // 没有使用自定义Start位置，mOriginalOffsetTop和mCurrentTargetOffsetTop相抵消
+            // 就是mSpinnerOffsetEnd的位置。
             setTargetOffsetTopAndBottom(endTarget - mCurrentTargetOffsetTop,
                     true /* requires update */);
             mNotify = false;
@@ -590,7 +593,28 @@ public class GestureRefreshLayout extends ViewGroup {
         }else {
             // cancel refresh
             mRefreshing = false;
-            animateOffsetToStartPosition(mCurrentTargetOffsetTop, mRefreshListener);// 回程
+            Animation.AnimationListener listener = null;
+            if (!mScale) {
+                listener = new Animation.AnimationListener() {
+
+                    @Override
+                    public void onAnimationStart(Animation animation) {
+                    }
+
+                    @Override
+                    public void onAnimationEnd(Animation animation) {
+                        if (!mScale) {
+                            startScaleDownAnimation(null);
+                        }
+                    }
+
+                    @Override
+                    public void onAnimationRepeat(Animation animation) {
+                    }
+
+                };
+            }
+            animateOffsetToStartPosition(mCurrentTargetOffsetTop, listener);// 回程
         }
         if (mGestureChangeListener != null) {
             mGestureChangeListener.onFinishDrag(mCurrentTargetOffsetTop);
