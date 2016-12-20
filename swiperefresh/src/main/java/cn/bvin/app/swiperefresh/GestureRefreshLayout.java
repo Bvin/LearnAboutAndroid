@@ -566,12 +566,13 @@ public class GestureRefreshLayout extends ViewGroup {
                 ViewCompat.setScaleX(mRefreshView, 1f);
                 ViewCompat.setScaleY(mRefreshView, 1f);
             }
-            if (mScale) {
-                //setAnimationProgress(Math.min(1f, overscrollTop / mTotalDragDistance));
-            }
+
         }
         if (overscrollTop < mTotalDragDistance){
             // update progress
+            if (mScale) {
+                setAnimationProgress(Math.min(1f, overscrollTop / mTotalDragDistance));
+            }
         }else {
             // 超出定义的刷新距离
         }

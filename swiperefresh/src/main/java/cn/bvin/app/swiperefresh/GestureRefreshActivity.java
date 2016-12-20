@@ -10,7 +10,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.Button;
 
-public class GestureRefreshActivity extends AppCompatActivity {
+public class GestureRefreshActivity extends AppCompatActivity implements GestureRefreshLayout.OnRefreshListener {
 
     private static final String TAG = "GestureRefreshActivity";
 
@@ -47,13 +47,13 @@ public class GestureRefreshActivity extends AppCompatActivity {
                 Log.d(TAG, "onFinishDrag: "+endY);
             }
         });
-        mGestureRefreshLayout.setOnRefreshListener(new GestureRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                execute();
-            }
-        });
+        mGestureRefreshLayout.setOnRefreshListener(this);
         mButton = (Button) mGestureRefreshLayout.findViewById(R.id.button);
+    }
+
+    @Override
+    public void onRefresh() {
+        execute();
     }
 
     private void execute(){
@@ -91,6 +91,7 @@ public class GestureRefreshActivity extends AppCompatActivity {
             return true;
         }else if (item.getItemId() == R.id.refresh){
             mGestureRefreshLayout.setRefreshing(true);
+            onRefresh();
             return true;
         }
         return super.onOptionsItemSelected(item);
