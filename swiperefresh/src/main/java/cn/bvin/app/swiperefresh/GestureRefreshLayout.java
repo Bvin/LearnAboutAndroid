@@ -87,6 +87,9 @@ public class GestureRefreshLayout extends ViewGroup {
     // Whether the client has set a custom starting position;
     private boolean mUsingCustomStart;
 
+    // 是否移动Content在下拉的过程中
+    private boolean mTranslateContent;
+
     private Animation.AnimationListener mRefreshListener = new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
@@ -107,15 +110,7 @@ public class GestureRefreshLayout extends ViewGroup {
                     }
                 }
             } else {
-                mRefreshView.setVisibility(View.GONE);
-                setColorViewAlpha(MAX_ALPHA);
-                // Return the circle to its start position
-                if (mScale) {
-                    setAnimationProgress(0 /* animation complete and view is hidden */);
-                }  {
-                    setTargetOffsetTopAndBottom(mOriginalOffsetTop - mCurrentTargetOffsetTop,
-                            true /* requires update */);
-                }
+                reset();
             }
             mCurrentTargetOffsetTop = mRefreshView.getTop();
         }
@@ -147,7 +142,29 @@ public class GestureRefreshLayout extends ViewGroup {
     void reset() {
         mRefreshView.clearAnimation();
         mRefreshView.setVisibility(View.GONE);
+        setColorViewAlpha(MAX_ALPHA);
+        // Return the circle to its start position
+        if (mScale) {
+            setAnimationProgress(0 /* animation complete and view is hidden */);
+        } else {
+            setTargetOffsetTopAndBottom(mOriginalOffsetTop - mCurrentTargetOffsetTop,
+                    true /* requires update */);
+        }
         mCurrentTargetOffsetTop = mRefreshView.getTop();
+    }
+
+    @Override
+    public void setEnabled(boolean enabled) {
+        super.setEnabled(enabled);
+        if (!enabled){
+            reset();
+        }
+    }
+
+    @Override
+    protected void onDetachedFromWindow() {
+        super.onDetachedFromWindow();
+        reset();
     }
 
     /**
@@ -336,9 +353,10 @@ public class GestureRefreshLayout extends ViewGroup {
         }
         final View child = mTarget;
         final int childLeft = getPaddingLeft();
-        // mRefreshView.getMeasuredHeight() + mCurrentTargetOffsetTop 经过onMeasure这两个值会相互抵消
-        // 没有抵消，则会出现偏差，经测试，如果没有抵消掉，第一次下拉的时候会跳顿一下，跳顿记录就是mCurrentTargetOffsetTop的原始值
-        final int childTop = getPaddingTop() + mRefreshView.getMeasuredHeight() + mCurrentTargetOffsetTop;
+        int childTop = getPaddingTop();
+        if (mTranslateContent) {
+            childTop += mRefreshView.getMeasuredHeight() + mCurrentTargetOffsetTop;
+        }
         final int childWidth = width - getPaddingLeft() - getPaddingRight();
         final int childHeight = height - getPaddingTop() - getPaddingBottom();
         child.layout(childLeft, childTop, childLeft + mTarget.getMeasuredWidth(), childTop + mTarget.getMeasuredHeight());
