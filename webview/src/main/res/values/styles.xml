@@ -7,8 +7,10 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
 
+        <!--windowIsTranslucent=true将会完全透明到可以看见底下的东西-->
         <item name="android:windowIsTranslucent">true</item>
-        <item name="android:windowBackground">@android:color/transparent</item>
+        <!--windowBackground设置为透明色将会变成黑色，否则主题色-->
+        <item name="android:windowBackground">@color/trans</item>
         <item name="android:windowContentOverlay">@null</item>
         <item name="android:backgroundDimEnabled">false</item>
     </style>
