@@ -16,6 +16,7 @@ public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private WebView webView;
+    private JavascriptBridge mJavascriptBridge;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,7 +43,7 @@ public class MainActivity extends AppCompatActivity {
                 Log.d(TAG, "onPageFinished: "+url);
             }
         });
-        //JavascriptBridge.with(webView).call("blank");
+        mJavascriptBridge = JavascriptBridge.with(webView);
     }
 
     @Override
@@ -54,7 +55,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.load){
-            load();
+            mJavascriptBridge.call("alert(123456)");
             return true;
         }
         return super.onOptionsItemSelected(item);
