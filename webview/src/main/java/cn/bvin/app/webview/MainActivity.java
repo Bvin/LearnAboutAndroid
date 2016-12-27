@@ -1,12 +1,17 @@
 package cn.bvin.app.webview;
 
+import android.app.NotificationManager;
+import android.app.PendingIntent;
+import android.content.Context;
+import android.content.Intent;
+import android.support.v4.app.NotificationCompat;
+import android.support.v4.app.TaskStackBuilder;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.webkit.JavascriptInterface;
-import android.webkit.JsResult;
 import android.webkit.WebChromeClient;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -38,15 +43,56 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        mJavascriptBridge = JavascriptBridge.with(webView);
+        mJavascriptBridge = JavascriptBridge.on(webView);
         mJavascriptBridge.register(new JsObj(),"jsobj");
+        mJavascriptBridge.register(new NObject(),"nobj");
     }
 
     class JsObj{
 
         @JavascriptInterface
-        public String toString() {
-            return "JsObj{}";
+        public String toString(String message) {
+            return message;
+        }
+
+    }
+
+    class NObject{
+
+        @JavascriptInterface
+        public void showNotification(String message) {
+            Log.d(TAG, "showNotification: "+message);
+            NotificationCompat.Builder mBuilder =
+                    new NotificationCompat.Builder(MainActivity.this)
+                            .setTicker(message)
+                            .setSmallIcon(R.mipmap.ic_launcher)
+                            .setContentTitle("Js消息")
+                            .setContentText(message)
+                            .setAutoCancel(true);
+
+            // Creates an explicit intent for an Activity in your app
+            Intent resultIntent = new Intent(MainActivity.this, MainActivity.class);
+            resultIntent.putExtra("EXTRA_FROM_NOTIFICATION", true);
+
+            // The stack builder object will contain an artificial back stack for the
+            // started Activity.
+            // This ensures that navigating backward from the Activity leads out of
+            // your application to the Home screen.
+            TaskStackBuilder stackBuilder = TaskStackBuilder.create(MainActivity.this);
+            // Adds the back stack for the Intent (but not the Intent itself)
+            stackBuilder.addParentStack(MainActivity.class);
+            // Adds the Intent that starts the Activity to the top of the stack
+            stackBuilder.addNextIntent(resultIntent);
+            PendingIntent resultPendingIntent =
+                    stackBuilder.getPendingIntent(
+                            0,
+                            PendingIntent.FLAG_UPDATE_CURRENT
+                    );
+            mBuilder.setContentIntent(resultPendingIntent);
+            NotificationManager mNotificationManager =
+                    (NotificationManager)getSystemService(Context.NOTIFICATION_SERVICE);
+            // mId allows you to update the notification later on.
+            mNotificationManager.notify(-1, mBuilder.build());
         }
     }
 
@@ -59,7 +105,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.load){
-            mJavascriptBridge.call("alert(jsobj.toString())");
+            mJavascriptBridge.call("nobj.showNotification('"+item.getTitle().toString()+"')");
             return true;
         }
         return super.onOptionsItemSelected(item);
