@@ -11,7 +11,7 @@ import android.webkit.WebView;
  *
  * Use extreme care when using this method in a WebView which could contain untrusted content.
  * <p>用于加载信任的内容.
- * JavascriptBridge.on(webview).register(obj,name).call(jscode).remove(name).
+ * <p>JavascriptBridge.on(webview).register(obj,name).call(jscode).remove(name).
  * <p><i>Created by bvin on 2016/12/27.</i>
  */
 
