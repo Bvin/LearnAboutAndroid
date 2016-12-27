@@ -4,6 +4,7 @@ import android.annotation.TargetApi;
 import android.os.Build;
 import android.util.Log;
 import android.webkit.ValueCallback;
+import android.webkit.WebSettings;
 import android.webkit.WebView;
 
 /**
@@ -27,7 +28,20 @@ public class JavascriptBridge {
     private JavascriptBridge(WebView webView) {
         mWebView = webView;
         // Enable Javascript
-        mWebView.getSettings().setJavaScriptEnabled(true);
+        WebSettings settings = mWebView.getSettings();
+        settings.setJavaScriptEnabled(true);
+
+        //4)通过以下设置，防止越权访问，跨域等安全问题：
+        settings.setAllowFileAccess(false);
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+            settings.setAllowFileAccessFromFileURLs(false);
+            settings.setAllowUniversalAccessFromFileURLs(false);
+        }
+
+        //1)建议开发者通过以下方式移除该JavaScript接口：
+        remove("searchBoxJavaBridge_");//CVE-2014-1939
+        remove("accessibility");//CVE-2014-7224
+        remove("accessibilityTraversal");//CVE-2014-7224
     }
 
     /**
