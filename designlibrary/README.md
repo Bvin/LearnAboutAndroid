@@ -12,4 +12,6 @@ notes:gradle只支持res-auto命名空间，不支持自定义了
     <li>snap:具有粘性，离到很近的时候自动贴过去
 </ol>
 <p>5.md语法，\<p\>是另起一行,\<br\>是同一段落里换行
+6. layout_behavior应用在include时，include一定要写宽高，否则会关联不到，
+或者直接在include的layout里面也可以
         
