@@ -9,11 +9,6 @@
     tools:context="cn.bvin.app.designlibrary.BottomSheetActivity">
 
     <include
-        android:id="@+id/bottom_sheet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        app:behavior_hideable="true"
-        app:layout_behavior="@string/bottom_sheet_behavior"
         layout="@layout/bottom_sheet"/>
 
     <android.support.design.widget.FloatingActionButton
