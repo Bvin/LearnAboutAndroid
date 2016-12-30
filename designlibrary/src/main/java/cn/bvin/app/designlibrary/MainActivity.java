@@ -26,7 +26,8 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 //CoordinatorActivity.start(MainActivity.this);
-                ItemTouchHelperActivity.start(MainActivity.this);
+                //ItemTouchHelperActivity.start(MainActivity.this);
+                BottomSheetActivity.start(MainActivity.this);
             }
         });
     }

@@ -138,7 +138,7 @@ public class ItemTouchHelperActivity extends AppCompatActivity {
             }
         });
 
-        itemTouchHelper = new ItemTouchHelperExtension.SimpleCallback();
+        //itemTouchHelper = new ItemTouchHelperExtension.SimpleCallback();
         itemTouchHelper.attachToRecyclerView(recyclerView);
     }
 

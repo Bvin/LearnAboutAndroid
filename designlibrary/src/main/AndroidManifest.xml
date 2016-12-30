@@ -30,6 +30,8 @@
         </activity>
         <activity android:name=".coordinator.ItemTouchHelperActivity">
         </activity>
+        <activity android:name=".BottomSheetActivity">
+        </activity>
     </application>
 
 </manifest>
