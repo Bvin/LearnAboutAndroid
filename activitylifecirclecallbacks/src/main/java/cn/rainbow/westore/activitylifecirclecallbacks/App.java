@@ -28,32 +28,32 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     @Override
     public void onActivityCreated(Activity activity, Bundle savedInstanceState) {
-
+        Log.d(TAG, "onActivityCreated: "+activity.toString());
     }
 
     @Override
     public void onActivityStarted(Activity activity) {
-        Log.d(TAG, "onActivityStarted: ");
+        Log.d(TAG, "onActivityStarted: "+activity.toString());
         if (i==0){
-            Log.d(TAG, "onActivityResumed: from background");
+            Log.d(TAG, "Resumed from background");
         }
         i++;
     }
 
     @Override
     public void onActivityResumed(Activity activity) {
-        Log.d(TAG, "onActivityResumed: ");
+        Log.d(TAG, "onActivityResumed: "+activity.toString());
 
     }
 
     @Override
     public void onActivityPaused(Activity activity) {
-        Log.d(TAG, "onActivityPaused: ");
+        Log.d(TAG, "onActivityPaused: "+activity.toString());
     }
 
     @Override
     public void onActivityStopped(Activity activity) {
-        Log.d(TAG, "onActivityStopped: ");
+        Log.d(TAG, "onActivityStopped: "+activity.toString());
         i--;
     }
 
@@ -64,6 +64,6 @@ public class App extends Application implements Application.ActivityLifecycleCal
 
     @Override
     public void onActivityDestroyed(Activity activity) {
-
+        Log.d(TAG, "onActivityDestroyed: "+activity.toString());
     }
 }
