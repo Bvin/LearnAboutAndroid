@@ -30,6 +30,8 @@ fi
 改正，否则最后一条合并commit依然是你之前的配的user，以后的项目最后手动配置user，以免用的全局user，
 如果不同项目实际user是不一样的话。
 
+新建项目提交之前，记得一定要先把config的user改成github上的用户名
+
 2. JitPack支持的gradle版本
 project/build.gradle中
 ```
