@@ -30,6 +30,7 @@ fi
 改正，否则最后一条合并commit依然是你之前的配的user，以后的项目最后手动配置user，以免用的全局user，
 如果不同项目实际user是不一样的话。
 
+
 >若出现以下错误：
 $ git push -f github master
 Counting objects: 2299, done.
@@ -38,8 +39,7 @@ Compressing objects: 100% (1635/1635), done.
 Writing objects: 100% (2299/2299), 793.46 KiB | 0 bytes/s, done.
 Total 2299 (delta 975), reused 0 (delta 0)
 remote: Resolving deltas: 100% (975/975), completed with 1 local object.
-To https://github.com/Bvin/xxx.git
- + a08ffb4...523651d master -> master (forced update)
+To https://github.com/Bvin/xxx.git a08ffb4...523651d master -> master (forced update)
 直接 -f 强推
 
 
