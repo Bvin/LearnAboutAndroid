@@ -17,44 +17,50 @@
         android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
-    <LinearLayout
-        android:layout_marginLeft="15dp"
-        android:layout_marginRight="15dp"
-        android:layout_marginTop="15dp"
+
+    <TextView
+        android:text="地块编号"
+        android:textSize="15sp"
+        android:layout_marginTop="25dp"
+        android:layout_gravity="center_horizontal"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"/>
+
+
+    <RelativeLayout
+        android:layout_marginLeft="25dp"
+        android:layout_marginRight="25dp"
+        android:layout_marginTop="5dp"
         android:layout_marginBottom="15dp"
         android:focusable="true"
         android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
-        <TextView
-            android:text="地块编号："
-            android:textSize="18sp"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
-
         <EditText
-            android:layout_width="0dp"
-            android:layout_weight="1"
+            android:id="@+id/et_ground_code"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:ems="10"
-            android:imeOptions="actionDone"
-            android:inputType="numberDecimal"/>
+            android:minWidth="125dp"
+            android:layout_centerHorizontal="true"
+            android:imeOptions="actionNext"
+            android:inputType="textCapCharacters"/>
 
-        <Button
-            android:text="链接"
-            android:layout_marginLeft="15dp"
+        <TextView
+            android:id="@+id/tv_ground_code"
+            tools:text="DV584646466"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:layout_centerHorizontal="true"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"/>
 
-    </LinearLayout>
+    </RelativeLayout>
 
     <LinearLayout
         android:layout_marginLeft="15dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_width="match_parent"
         android:layout_height="wrap_content">
 
@@ -70,7 +76,7 @@
             android:layout_weight="1"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:imeOptions="actionDone"
+            android:imeOptions="actionNext"
             android:inputType="numberDecimal"/>
         <Spinner
             android:id="@+id/sp_square_unit"
@@ -82,8 +88,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="10dp"
         android:layout_marginTop="10dp"
@@ -101,9 +105,9 @@
             android:id="@+id/et_far"
             android:layout_width="0dp"
             android:layout_weight="1"
+            android:imeOptions="actionNext"
             android:layout_height="wrap_content"
             android:ems="10"
-            android:imeOptions="actionDone"
             android:inputType="numberDecimal"/>
 
 
@@ -116,8 +120,6 @@
     </LinearLayout>
 
     <LinearLayout
-        android:focusable="true"
-        android:focusableInTouchMode="true"
         android:layout_marginLeft="15dp"
         android:layout_marginRight="10dp"
         android:layout_width="match_parent"
@@ -158,7 +160,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="10dp"
         android:textSize="30sp"/>
 
 
