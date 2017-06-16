@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="square_unit">
+        <item>亩</item>
+        <item>平方米</item>
+    </string-array>
+    <string-array name="price_unit">
+        <item>万元/亩</item>
+        <item>元/平方米</item>
+    </string-array>
+    <string-array name="far">
+        <item>最小值</item>
+        <item>最大值</item>
+    </string-array>
+</resources>
