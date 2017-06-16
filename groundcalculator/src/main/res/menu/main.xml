@@ -5,8 +5,8 @@
         android:id="@+id/action_calculate"
         android:title="计算"
         app:showAsAction="ifRoom"/>
-    <item
+    <!--<item
         android:id="@+id/action_history"
         android:title="历史"
-        app:showAsAction="ifRoom"/>
+        app:showAsAction="never"/>-->
 </menu>
