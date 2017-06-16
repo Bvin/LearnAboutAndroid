@@ -1,6 +1,7 @@
 package cn.bvin.android.app.groundcalculator;
 
 import android.content.Context;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -16,6 +17,7 @@ import android.widget.TextView;
 import java.math.BigDecimal;
 
 public class MainActivity extends AppCompatActivity {
+
     private Spinner mSpSquareUnit;
     private EditText mEtSquare;
     private Spinner mSpFar;
@@ -23,6 +25,17 @@ public class MainActivity extends AppCompatActivity {
     private Spinner mSpPriceUnit;
     private EditText mEtPrice;
     private TextView mTvResult;
+
+    private SharedPreferences mPreferences;
+
+    private TextView mTvGroundCode;
+    private TextView mTvGroundSquare;
+    private TextView mTvFar;
+    private TextView mTvPrice;
+
+    private EditText mEtGroundCode;
+    private TextView mTvBuildPrice;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -38,6 +51,20 @@ public class MainActivity extends AppCompatActivity {
         mEtPrice = (EditText) findViewById(R.id.et_price);
         mTvResult = (TextView) findViewById(R.id.tv_result);
 
+        mEtGroundCode = (EditText) findViewById(R.id.et_ground_code);
+
+        mTvGroundCode = (TextView) findViewById(R.id.tv_ground_code);
+        mTvGroundSquare = (TextView) findViewById(R.id.tv_ground_square);
+        mTvFar = (TextView) findViewById(R.id.tv_far);
+        mTvPrice = (TextView) findViewById(R.id.tv_price);
+        mTvBuildPrice = (TextView) findViewById(R.id.tv_build_price);
+
+        mPreferences = getPreferences(MODE_PRIVATE);
+
+        mEtGroundCode.setText(mPreferences.getString(mTvGroundCode.getText().toString(), null));
+        mEtSquare.setText(mPreferences.getString(mTvGroundSquare.getText().toString(), null));
+        mEtFar.setText(mPreferences.getString(mTvFar.getText().toString(), null));
+        mEtPrice.setText(mPreferences.getString(mTvPrice.getText().toString(), null));
     }
 
     @Override
@@ -64,6 +91,13 @@ public class MainActivity extends AppCompatActivity {
             BigDecimal buildingSquare = groundSquare.multiply(far);//土地面积*容积率
             BigDecimal result = totalPrice.divide(buildingSquare,BigDecimal.ROUND_HALF_EVEN);
             mTvResult.setText(result.toString()+"元/㎡");
+            mPreferences.edit()
+                    .putString(mTvGroundCode.getText().toString(),mEtGroundCode.getText().toString())
+                    .putString(mTvGroundSquare.getText().toString(),mEtSquare.getText().toString())
+                    .putString(mTvFar.getText().toString(),mEtFar.getText().toString())
+                    .putString(mTvPrice.getText().toString(),mEtPrice.getText().toString())
+                    .putString(mTvBuildPrice.getText().toString(),mTvResult.getText().toString())
+                    .apply();
         }
         return true;
     }
