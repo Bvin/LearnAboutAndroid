@@ -1,11 +1,12 @@
 apply plugin: 'com.android.application'
+apply plugin: 'com.google.gms.google-services'
 
 android {
     compileSdkVersion 25
     buildToolsVersion "25.0.2"
 
     defaultConfig {
-        applicationId "cn.bvin.android.app.groundcalculator"
+        applicationId "cn.bvin.android.app.calculator.ground"
         minSdkVersion 9
         targetSdkVersion 25
         versionCode 1
