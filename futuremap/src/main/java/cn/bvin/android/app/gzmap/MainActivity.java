@@ -13,31 +13,31 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        mMapView = (MapView) findViewById(R.id.map_view);
-        mMapView.onCreate(savedInstanceState);
+        //mMapView = (MapView) findViewById(R.id.map_view);
+        //mMapView.onCreate(savedInstanceState);
     }
 
     @Override
     protected void onResume() {
         super.onResume();
-        mMapView.onResume();
+        //mMapView.onResume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        mMapView.onPause();
+        //mMapView.onPause();
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        mMapView.onDestroy();
+        //mMapView.onDestroy();
     }
 
     @Override
     protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
-        mMapView.onSaveInstanceState(outState);
+        //mMapView.onSaveInstanceState(outState);
     }
 }

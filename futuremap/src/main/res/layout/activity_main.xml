@@ -7,8 +7,9 @@
     android:layout_height="match_parent"
     tools:context="cn.bvin.android.app.gzmap.MainActivity">
 
-    <com.amap.api.maps2d.MapView
-        android:id="@+id/map_view"
+    <fragment
+        android:id="@+id/map_fragment"
+        android:name="com.amap.api.maps2d.SupportMapFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"/>
 
