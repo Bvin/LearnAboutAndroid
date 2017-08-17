@@ -3,18 +3,33 @@ package cn.bvin.android.app.gzmap;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
+import com.amap.api.maps2d.AMap;
+import com.amap.api.maps2d.AMapException;
+import com.amap.api.maps2d.CameraUpdateFactory;
 import com.amap.api.maps2d.MapView;
+import com.amap.api.maps2d.SupportMapFragment;
+import com.amap.api.maps2d.model.LatLng;
+import com.amap.api.maps2d.model.LatLngBounds;
 
 public class MainActivity extends AppCompatActivity {
 
-    private MapView mMapView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        //mMapView = (MapView) findViewById(R.id.map_view);
-        //mMapView.onCreate(savedInstanceState);
+
+        SupportMapFragment fragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map_fragment);
+        AMap map = fragment.getMap();
+        LatLng southwest = new LatLng(25.58105,114.704015);
+        LatLng northeast = new LatLng(25.932933,115.089223);
+        try {
+            LatLngBounds lb = new LatLngBounds(southwest,northeast);
+            map.animateCamera(CameraUpdateFactory.newLatLngBounds(lb,0));
+        } catch (AMapException e) {
+            e.printStackTrace();
+        }
+
     }
 
     @Override
