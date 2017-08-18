@@ -55,13 +55,12 @@ public class MainActivity extends AppCompatActivity {
                         public void run() {
                             //赣州市
                             DistrictItem self = districtResult.getDistrict().get(0);
-                            addDistrictItem(self);
 
                             //下瞎区县
                             for (DistrictItem item : self.getSubDistrict()) {
 
                                 String name = item.getName();
-                                if (name.lastIndexOf("区")==name.length()-1){
+
                                     //Log.d("onDistrictSearched: ",item.toString());
                                     DistrictSearch districtSearch = new DistrictSearch(MainActivity.this);
                                     DistrictSearchQuery districtSearchQuery = new DistrictSearchQuery();
@@ -74,12 +73,16 @@ public class MainActivity extends AppCompatActivity {
                                         if (result != null) {
                                             DistrictItem selfDistrict = result.getDistrict().get(0);
                                             Log.d("onDistrictSearched: ",selfDistrict.toString());
-                                            addDistrictItem(selfDistrict);
+                                            if (name.lastIndexOf("区")==name.length()-1){
+                                                addDistrictItem(selfDistrict,Color.RED);
+                                            }else {
+                                                addDistrictItem(selfDistrict,Color.YELLOW);
+                                            }
                                         }
                                     } catch (AMapException e) {
                                         e.printStackTrace();
                                     }
-                                }
+
                             }
                         }
                     }.start();
@@ -89,7 +92,7 @@ public class MainActivity extends AppCompatActivity {
         districtSearch.searchDistrictAsyn();
     }
 
-    private void addDistrictItem( DistrictItem item) {
+    private void addDistrictItem( DistrictItem item, int color) {
 
         if (item == null) {
             return;
@@ -121,7 +124,7 @@ public class MainActivity extends AppCompatActivity {
                 polylineOption.add(firstLatLng);
             }
 
-            polylineOption.width(10).color(Color.BLUE);
+            polylineOption.width(10).color(color);
             mAMap.addPolyline(polylineOption);
         }
     }
