@@ -53,12 +53,33 @@ public class MainActivity extends AppCompatActivity {
 
                     new Thread() {
                         public void run() {
+                            //赣州市
                             DistrictItem self = districtResult.getDistrict().get(0);
                             addDistrictItem(self);
-                            Log.d("onDistrictSearched: ",self.toString());
+
+                            //下瞎区县
                             for (DistrictItem item : self.getSubDistrict()) {
-                                Log.d("onDistrictSearched: ",item.toString());
-                                addDistrictItem(item);
+
+                                String name = item.getName();
+                                if (name.lastIndexOf("区")==name.length()-1){
+                                    //Log.d("onDistrictSearched: ",item.toString());
+                                    DistrictSearch districtSearch = new DistrictSearch(MainActivity.this);
+                                    DistrictSearchQuery districtSearchQuery = new DistrictSearchQuery();
+                                    districtSearchQuery.setKeywords(name);
+                                    districtSearchQuery.setShowBoundary(true);
+                                    districtSearchQuery.setShowChild(true);
+                                    districtSearch.setQuery(districtSearchQuery);
+                                    try {
+                                        DistrictResult result = districtSearch.searchDistrict();
+                                        if (result != null) {
+                                            DistrictItem selfDistrict = result.getDistrict().get(0);
+                                            Log.d("onDistrictSearched: ",selfDistrict.toString());
+                                            addDistrictItem(selfDistrict);
+                                        }
+                                    } catch (AMapException e) {
+                                        e.printStackTrace();
+                                    }
+                                }
                             }
                         }
                     }.start();
