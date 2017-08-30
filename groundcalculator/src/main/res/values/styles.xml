@@ -8,4 +8,20 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
+    <style name="table_left">
+        <item name="android:padding">16dp</item>
+        <item name="android:layout_marginRight">1dp</item>
+        <item name="android:background">#ff303030</item>
+        <item name="android:gravity">center</item>
+        <item name="android:layout_width">@dimen/table_left_width</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
+    <style name="table_right">
+        <item name="android:padding">16dp</item>
+        <item name="android:background">#ff303030</item>
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+    </style>
+
 </resources>
