@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="cn.bvin.android.app.calculator.ground.DetailsActivity">
+    tools:context="cn.bvin.android.app.calculator.ground.DetailsFragment">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/my_toolbar"
@@ -41,7 +41,7 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
                     style="@style/table_left"
@@ -55,262 +55,171 @@
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
                     style="@style/table_left"
                     android:text="地块位置"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="地块面积"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="土地用途"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="出让年限"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="@dimen/table_left_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="容积率（FAR）"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="批发零售40年、城镇住宅70年"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="@dimen/table_left_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="建筑密度（D）"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="@dimen/table_left_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="绿地率"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="@dimen/table_left_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="起始价"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="@dimen/table_left_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="加价幅度"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="@dimen/table_left_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:gravity="center"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="拍卖开始时间"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="@dimen/table_left_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:gravity="center"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="拍卖结束时间"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
             <LinearLayout
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="@dimen/table_left_width"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:gravity="center"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="楼面价"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>
 
 
             <LinearLayout
-                android:layout_marginBottom="1dp"
-                android:layout_marginTop="1dp">
+                android:layout_marginTop="@dimen/divider_size">
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginRight="1dp"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_left"
                     android:text="案名"/>
 
                 <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#ff303030"
-                    android:padding="16dp"
+                    style="@style/table_right"
                     android:text="内容"/>
 
             </LinearLayout>

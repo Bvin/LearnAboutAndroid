@@ -71,9 +71,12 @@
             android:name="BaiduMobAd_WIFI_LOCATION"
             android:value="true"/>
 
-        <activity android:name=".DetailsActivity">
+        <activity android:name=".DetailsFragment">
         </activity>
-        <activity android:name=".Main2Activity">
+        <activity
+            android:name=".Main2Activity"
+            android:label="@string/title_activity_main2"
+            android:theme="@style/AppTheme">
         </activity>
         <activity android:name=".t2">
         </activity>
