@@ -1,11 +1,10 @@
-package cn.bvin.android.app.groundcalculator;
+package cn.bvin.android.app.calculator.ground;
 
 import android.content.Context;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
-import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -85,8 +84,14 @@ public class MainActivity extends AppCompatActivity {
             BigDecimal groundSquare =  new BigDecimal(mEtSquare.getText().toString());//亩
             BigDecimal price = new BigDecimal(mEtPrice.getText().toString());
             price = price.multiply(new BigDecimal(10000));//换算元
-            BigDecimal totalPrice = price.multiply(groundSquare);//只要面积和单价单位一致便可直接换算
-            groundSquare = groundSquare.multiply(new BigDecimal(666.6666667));//换算平方米
+            BigDecimal totalPrice = price;
+            if (mSpPriceUnit.getSelectedItemId() == 0) {//万元/亩
+                totalPrice = price.multiply(groundSquare);//只要面积和单价单位一致便可直接换算
+            }
+
+            if (mSpSquareUnit.getSelectedItemId() == 0) {//亩
+                groundSquare = groundSquare.multiply(new BigDecimal(666.6666667));//换算平方米
+            }
             BigDecimal far = new BigDecimal(mEtFar.getText().toString());
             BigDecimal buildingSquare = groundSquare.multiply(far);//土地面积*容积率
             BigDecimal result = totalPrice.divide(buildingSquare,BigDecimal.ROUND_HALF_EVEN);

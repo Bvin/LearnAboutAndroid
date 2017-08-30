@@ -6,7 +6,7 @@
     </string-array>
     <string-array name="price_unit">
         <item>万元/亩</item>
-        <item>元/平方米</item>
+        <item>万元</item>
     </string-array>
     <string-array name="far">
         <item>最小值</item>
