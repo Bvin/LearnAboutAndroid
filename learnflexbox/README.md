@@ -1,0 +1,2 @@
+1.FlexBox实现宽度需要设置march_parent，flexWrap设置微微nowrap
+2.等同于LinearLayout+android:layout_weight="1"效果

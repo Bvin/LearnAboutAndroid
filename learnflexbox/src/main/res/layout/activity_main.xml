@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    tools:context="cn.bvin.android.wdiget.flexbox.MainActivity">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            app:viewAspectRatio="1"
+            android:layout_weight="1"
+            app:actualImageUri="https://imgsa.baidu.com/news/crop%3D0%2C0%2C1193%2C578/sign=1d52922b9a8fa0ec6b883e4d1ba775de/ac4bd11373f08202252dc12740fbfbedab641b6e.jpg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            app:viewAspectRatio="1"
+            android:layout_weight="1"
+            app:actualImageUri="https://imgsa.baidu.com/news/crop%3D0%2C0%2C1193%2C578/sign=1d52922b9a8fa0ec6b883e4d1ba775de/ac4bd11373f08202252dc12740fbfbedab641b6e.jpg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            app:viewAspectRatio="1"
+            android:layout_weight="1"
+            app:actualImageUri="https://imgsa.baidu.com/news/crop%3D0%2C0%2C1193%2C578/sign=1d52922b9a8fa0ec6b883e4d1ba775de/ac4bd11373f08202252dc12740fbfbedab641b6e.jpg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </LinearLayout>
+
+    <com.google.android.flexbox.FlexboxLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            app:viewAspectRatio="1"
+            app:actualImageUri="https://imgsa.baidu.com/news/crop%3D0%2C0%2C1193%2C578/sign=1d52922b9a8fa0ec6b883e4d1ba775de/ac4bd11373f08202252dc12740fbfbedab641b6e.jpg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            app:viewAspectRatio="1"
+            app:actualImageUri="https://imgsa.baidu.com/news/crop%3D0%2C0%2C1193%2C578/sign=1d52922b9a8fa0ec6b883e4d1ba775de/ac4bd11373f08202252dc12740fbfbedab641b6e.jpg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            app:viewAspectRatio="1"
+            app:actualImageUri="https://imgsa.baidu.com/news/crop%3D0%2C0%2C1193%2C578/sign=1d52922b9a8fa0ec6b883e4d1ba775de/ac4bd11373f08202252dc12740fbfbedab641b6e.jpg"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"/>
+
+    </com.google.android.flexbox.FlexboxLayout>
+
+
+</LinearLayout>
